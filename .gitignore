@@ -1,0 +1,4 @@
+webapp\src\webapp\__pycache__
+webapp\src\main\__pycache__
+webapp\src\main\migrations\__pycache__
+venv
