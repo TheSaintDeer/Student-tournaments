@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+Tournaments
+{% endblock title %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>Tournament events</h1>
+</div>
+
+<div class="row">
+
+{% for item in all_tournaments %}
+<div class="col-sm-3">
+
+<div class="card text-white ms-auto me-auto mt-5" style="width: 18rem; background: #36486b;">
+    <div class="card-body">
+        <h5 class="card-title">{{ item.name }}</h5>
+        <ul class="list-group list-group-flush mb-3 ">
+            <li class="list-group-item" style="color: white; background: #36486b">{{item.num_participants }} participants</li>
+            <li class="list-group-item" style="color: white; background: #36486b">{{ item.date }}</li>
+        </ul>
+        <div class="d-grid mx-auto" style="width: 8rem">
+            <a href="#" class="btn btn-primary ">View</a>
+        </div>
+    </div>
+</div>
+
+</div>
+{% endfor %}
+
+</div>
+
+{% endblock content %}
