@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'main',
+    'events',
     'api',
     'tournaments',
     'teams',
