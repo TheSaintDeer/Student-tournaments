@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Team detail page
+{% endblock title %}
+
+{% block content %}
+<ul>
+    <h1>Team name: {{ team.name }}</h1>
+    <h4>Players for this team:</h2>
+    {% if players_list %}
+    {% for player in players_list %}
+      <li><a href="">{{ player.user.first_name }}</a></li>
+    {% endfor %}
+    </ul>
+    {% else %}
+      <p>No players are available.</p>
+    {% endif %}
+
+</ul>
+{% endblock content %}

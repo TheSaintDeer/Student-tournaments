@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Team detail page
+{% endblock title %}
+
+{% block content %}
+<ul>
+    <h4>Username: {{ user.username }}</h1>
+    <h4>First name: {{ user.first_name }}</h1>
+    <h4>Last name: {{ user.last_name }}</h1>
+    <h4>Email: {{ user.email }}</h1>
+
+    <h4>Teams of this player:</h2>
+    {% if team_list %}
+    {% for team in team_list %}
+        <li><a href="{% url 'teams:detail' team.id %}">{{ team.name }}</a></li>
+    {% endfor %}
+    </ul>
+    {% else %}
+        <p>No teams are available.</p>
+    {% endif %}
+
+</ul>
+{% endblock content %}
