@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Tournament detail page
+{% endblock title %}
+
+{% block content %}
+<ul>
+    <h1>Tournament name: {{ tournament.name }}</h1>
+    <h4>Teams for this tournament:</h2>
+    {% if team_list %}
+    {% for team in team_list %}
+      <li><a href="{% url 'teams:detail' team.id %}">{{ team.name }}</a></li>
+    {% endfor %}
+    </ul>
+    {% else %}
+      <p>No teams are available.</p>
+    {% endif %}
+
+</ul>
+{% endblock content %}
