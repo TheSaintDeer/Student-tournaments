@@ -22,7 +22,7 @@ Tournaments
             <li class="list-group-item" style="color: white; background: #36486b">{{ item.date }}</li>
         </ul>
         <div class="d-grid mx-auto" style="width: 8rem">
-            <a href="#" class="btn btn-primary ">View</a>
+            <a href="{% url 'events:detail' item.id %}" class="btn btn-primary ">View</a>
         </div>
     </div>
 </div>
