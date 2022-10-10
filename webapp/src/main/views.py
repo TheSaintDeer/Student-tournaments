@@ -13,9 +13,9 @@ def login(request):
 def profile(request):
     # return render(request, 'profile/profile.html')
     # team_list = Team.objects.all()
-    team_list = Team.objects.filter(players__id = request.user.id)
+    team_list = Team.objects.filter(player__id = request.user.id)
     
     return render(request, 'profile/profile.html', {'team_list': team_list})
 
 def notification(request):
-    return render(request, 'notification/index.html')
+    return render(request, 'notification/notification.html')

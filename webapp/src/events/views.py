@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from main.models import Tournament, Team
 
 def index(request):
-    all_tournaments = Tournament.objects.all
+    all_tournaments = Tournament.objects.all()
     return render(request, 'events/events.html', {'all_tournaments':all_tournaments})
 
 def detail(request, tournament_id):
