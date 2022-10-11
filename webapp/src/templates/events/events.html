@@ -8,6 +8,9 @@ Tournaments
 <div class="container-fluid">
     <h1>Tournament events</h1>
 </div>
+<div class="container-fluid">
+    <a href="{% url 'events:create_event' %}" role="button" class = "btn btn-primary btn-lg">+  Create Event</a>
+</div>
 
 <div class="row">
 
@@ -18,8 +21,8 @@ Tournaments
     <div class="card-body">
         <h5 class="card-title">{{ item.name }}</h5>
         <ul class="list-group list-group-flush mb-3 ">
-            <li class="list-group-item" style="color: white; background: #36486b">{{item.num_participants }} participants</li>
-            <li class="list-group-item" style="color: white; background: #36486b">{{ item.date }}</li>
+            <li class="list-group-item" style="color: white; background: #36486b">{{ item.description }}</li>
+            <li class="list-group-item" style="color: white; background: #36486b">Owner: {{ item.owner }}</li>
         </ul>
         <div class="d-grid mx-auto" style="width: 8rem">
             <a href="{% url 'events:detail' item.id %}" class="btn btn-primary ">View</a>

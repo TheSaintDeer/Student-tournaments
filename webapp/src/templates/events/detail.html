@@ -7,7 +7,7 @@ Tournament detail page
 {% block content %}
 <ul>
     <h1>Tournament name: {{ tournament.name }}</h1>
-    <h4>Teams for this tournament:</h2>
+    <h4>Teams for this tournament:</h4>
     {% if team_list %}
     {% for team in team_list %}
       <li><a href="{% url 'teams:detail' team.id %}">{{ team.name }}</a></li>

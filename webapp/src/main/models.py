@@ -11,17 +11,17 @@ class Tournament(models.Model):
     description = models.TextField(max_length=200, help_text='Enter description tournament')
     logo = models.ImageField(default='none')
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    # count_teams = models.IntegerField(null=True)
-    # count_players_in_team = models.IntegerField(null=True)
+    count_teams = models.IntegerField()
+    count_players_in_team = models.IntegerField()
     # date_create = models.DateField(auto_now=False, auto_now_add=True)
     # date_start = models.DateField(auto_now=False, auto_now_add=False)
-    # reward = models.IntegerField(null=True)
-    # STATUS = [
-    #     ('CM', 'Complete'),
-    #     ('UN', 'Underway'),
-    #     ('PN', 'Pending'),
-    # ]
-    # state = models.CharField(max_length=2, choices=STATUS, default='PN')
+    reward = models.IntegerField()
+    STATUS = [
+        ('CM', 'Complete'),
+        ('UN', 'Underway'),
+        ('PN', 'Pending'),
+    ]
+    state = models.CharField(max_length=2, choices=STATUS, default='PN')
     pass
 
     def __str__(self) -> str:
@@ -31,8 +31,8 @@ class Team(models.Model):
     name = models.TextField(max_length=100, help_text='Enter team name')
     logo = models.ImageField(default='none')
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-    # teamleader = models.ForeignKey(User, on_delete=models.CASCADE)
-    # players = models.ManyToManyField(User, through='Player')
+    # teamleader = models.ForeignKey(User, on_delete=models.CASCADE, related_name='leader')
+    players = models.ManyToManyField(User, through='Player')
     pass
 
     def __str__(self) -> str:
