@@ -5,12 +5,16 @@ Register - Event
 {% endblock title %}
 
 {% block content %}
-    <div class="container-fluid"><h1>Register new Event</h1></div>
 
-<div class="container-sm mt-5 mb-5">
+<div class="container-sm mt-5" style="width: 30%">
+<h2 style="text-align: center">Register new event +</h2>
+</div>
+
+<div class="container-sm mt-5 mb-5" style="width: 30%">
 <form action="" method="POST">{% csrf_token %}
+
 <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="eName" name="eventName">
+    <input type="text" class="form-control" placeholder="Tournament's name" id="eName" name="eventName">
     <label for="eName">Tournament's name</label>
 </div>
 
@@ -25,9 +29,31 @@ Register - Event
 </div>
 
 <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="eOwner" name="eventOwner">
-    <label for="eOwner">Owner's name</label>
+    <input type="text" class="form-control" placeholder="Owner's name" id="eOwner" name="eventOwner">
+    <label for="eOwner">Owner</label>
 </div>
+
+<div class="row g-3 align-items-center mb-3">
+    <div class="col-md-4 form-floating">
+        <input type="text" class="form-control" placeholder="Number of teams" id="eTeams" name="eventTeams" required>
+        <label for="eTeams">Number of teams</label>
+    </div>
+    <div class="col-md-4 form-floating">
+        <input type="text" class="form-control" placeholder="Number of players" id="ePlayers" name="eventPlayers" required>
+        <label for="ePlayers">Number of players</label>
+    </div>
+    <div class="col-md-4 form-floating">
+        <input type="text" class="form-control" placeholder="Reward" id="eReward" name="eventReward" required>
+        <label for="eReward">Reward</label>
+    </div>
+</div>
+
+<select class="form-select mb-5" aria-label="Select status" name="eventStatus">
+    <option selected>Status</option>
+    <option value="CM">Complete</option>
+    <option value="UN">Underway</option>
+    <option value="PN">Pending</option>
+</select>
 
 <button type="submit" class="btn btn-primary">Submit</button>
 </form>
