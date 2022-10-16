@@ -6,7 +6,36 @@ Tournament detail page
 
 {% block content %}
 <ul>
-    <h1>Tournament name: {{ tournament.name }}</h1>
+    <img src="" class="card-img-top" alt="/image">
+    <h1 class="mb-5">{{ tournament.name }}</h1>
+
+    <table class="table" style="width: 60%; box-shadow: 0 5px 15px rgb(0 0 0 / 0.3)">
+        <tr>
+            <th class="table-active" style="width: 10rem">Name</th>
+            <td>{{ tournament.name }}</td>
+        </tr>
+        <tr>
+            <th class="table-active" style="height: 16rem">Description</th>
+            <td class="text-break">{{ tournament.description }}</td>
+        </tr>
+        <tr>
+            <th class="table-active">Owner</th>
+            <td>{{ tournament.owner }}</td>
+        </tr>
+        <tr>
+            <th class="table-active">Number of players</th>
+            <td>{{ tournament.count_players_in_team }}</td>
+        </tr>
+        <tr>
+            <th class="table-active">Reward</th>
+            <td>{{ tournament.reward }}</td>
+        </tr>
+        <tr>
+            <th class="table-active">Status</th>
+            <td>{{ tournament.state }}</td>
+        </tr>
+    </table>
+
     <h4>Teams for this tournament:</h4>
     {% if team_list %}
     {% for team in team_list %}
