@@ -8,14 +8,20 @@ Team detail page
 <ul>
     <h1>Team name: {{ team.name }}</h1>
     <h4>Players for this team:</h2>
+
     {% if players_list %}
     {% for player in players_list %}
-      <li><a href="">{{ player.user.first_name }}</a></li>
+      <li><a href="">{{ player.user.username }}</a></li>
     {% endfor %}
     </ul>
     {% else %}
       <p>No players are available.</p>
     {% endif %}
+
+    {% if team.owner.id == user.id %}
+    <a class="btn btn-primary" href="{% url 'teams:delete' team.pk %}">Delete</a>
+    {% endif %}
+
 
 </ul>
 {% endblock content %}

@@ -7,15 +7,33 @@ Tournament detail page
 {% block content %}
 <ul>
     <h1>Tournament name: {{ tournament.name }}</h1>
+    <h4>Teams number: {{ tournament.teams_number }}</h4>
+    <h4>Players in team: {{ tournament.players_in_team }}</h4>
+
     <h4>Teams for this tournament:</h2>
+    <h4 style="{% if tournament.owner.id == user.id %} color:red {% endif %} ">Owner: {{ tournament.owner }}</h4>
+
     {% if team_list %}
     {% for team in team_list %}
-      <li><a href="{% url 'teams:detail' team.id %}">{{ team.name }}</a></li>
+      
+    <li>
+      <img width="128" height="128" src="{{ team.logo.url }}" alt="team logo here!">
+      <a href="{% url 'teams:detail' team.id %}">{{ team.name }}</a>
+    </li>
     {% endfor %}
-    </ul>
     {% else %}
       <p>No teams are available.</p>
     {% endif %}
+
+    <a class="btn btn-primary" href="{% url 'teams:create' tournament.pk %}">Create a team</a>
+    {% if tournament.owner.id == user.id %}
+    <a class="btn btn-primary" href="{% url 'tournaments:delete' tournament.pk %}">Delete</a>
+    {% endif %} 
+
+
+    
+    <h4>Rounds:</h4>
+    
 
 </ul>
 {% endblock content %}
