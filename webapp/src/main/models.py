@@ -33,19 +33,17 @@ class Team(models.Model):
 
     def __str__(self) -> str:
         return self.name
-
-
-# class Enrollment(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-
-#     def __str__(self) -> str:
-#         return self.user.first_name + " -> " + self.team.name
     
+class Post(models.Model):
+    text = models.TextField(max_length=100, help_text='Enter post text')
+    author = models.OneToOneField(User, on_delete=models.CASCADE)
+    pass
 
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     teams = models.ManyToManyField(Team, blank=True)
+    bio = models.TextField(max_length=100, help_text='Your bio', blank=True, null=True)
+    avatar = models.ImageField(default='default_logos/player_default.png', upload_to='players_avatar', blank=True)
     pass
 
     def __str__(self) -> str:

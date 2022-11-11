@@ -22,7 +22,7 @@ def detail(request, tournament_id):
 class TournamentsCreateView(LoginRequiredMixin, CreateView):
     model = Tournament
     template_name = 'tournaments/tournament_create_form.html'
-    fields = ['name', 'description', 'logo']
+    fields = ['name', 'description', 'logo', 'teams_number', 'players_in_team']
     success_url = '/tournaments'
 
     def form_valid(self, form):

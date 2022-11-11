@@ -1,25 +1,121 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}
 Team detail page
 {% endblock title %}
 
 {% block content %}
-<ul>
-    <h4>Username: {{ user.username }}</h1>
-    <h4>First name: {{ user.first_name }}</h1>
-    <h4>Last name: {{ user.last_name }}</h1>
-    <h4>Email: {{ user.email }}</h1>
 
-    <h4>Teams of this player:</h2>
-    {% if team_list %}
-    {% for team in team_list %}
-        <li><a href="{% url 'teams:detail' team.id %}">{{ team.name }}</a></li>
-    {% endfor %}
-    </ul>
-    {% else %}
-        <p>No teams are available.</p>
-    {% endif %}
+<div class="container py-5">
 
-</ul>
+   <div class="row">
+
+
+        <div class="col-md-5 order-sm-2 order-md-2 offset-lg-1">
+
+            <div class="container">
+
+                <!-- Avatar -->
+                <h4>Profile picture</h4>
+                <div style="background-image: url({{player.avatar.url}}); background-size: cover; background-position: center; padding: 30%; border-radius: 50%; width: 200px; height: 200px"></div>
+
+                <!-- Teams -->
+                <div class="">
+                    <h4>Teams of this player</h2>
+                    {% if team_list %}
+                    {% for team in team_list %}
+                        <li>
+                            <img width="100" height="100" src="{{ team.logo.url }}" alt="team logo here!">
+                            <a class="m-2" href="{% url 'teams:detail' team.id %}">{{ team.name }}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                    {% else %}
+                        <p>No teams are available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5 order-sm-1 order-md-1">
+            <div class="container">
+                <div id="messages">
+                </div>
+
+                <!-- Forms -->
+                <div class="form-content">
+                    <form method="post" enctype="multipart/form-data" id="update_form">
+                        {% csrf_token %}
+                        {{ user_form.first_name | as_crispy_field }}
+                        {{ user_form.last_name | as_crispy_field}}
+                        {{ user_form.username | as_crispy_field}}
+                        {{ user_form.email | as_crispy_field}}
+                        {{ profile_form.bio | as_crispy_field}}
+                        <hr>
+                        <button  href="#" type="submit" class="btn btn-primary">Change Password</button>
+                        <hr>
+                        {{ profile_form.avatar | as_crispy_field}}
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="reset" class="btn btn-primary">Reset</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+
+    </div> 
+</div>
 {% endblock content %}
+
+
+{% block script %}
+<script> 
+    $('#update_form').on('submit', function(event){
+        event.preventDefault();
+        console.log("Form submitted!")  // sanity check
+        update_profile();
+    });
+
+    var alertList = document.querySelectorAll('.alert')
+    alertList.forEach(function (alert) {
+    new bootstrap.Alert(alert)
+    })
+
+function update_profile() {
+    $.ajax({
+        url : "/update_profile/", // the endpoint
+        type : "POST", // http method
+        data : {
+            // data sent with the post request
+            first_name: $('#id_first_name').val(),
+            last_name: $('#id_last_name').val(),
+            username: $('#id_username').val(),
+            email: $('#id_email').val(),
+            bio: $('#id_bio').val(),
+            avatar: $('#id_avatar').val(),
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+        }, 
+
+        // handle a successful response
+        success : function(json) {
+            console.log(json); // log the returned json to the console
+            $('#messages').html('<div class="alert alert-success alert-dismissible fade show" role="alert"> \
+                Changes saved! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+            </div>');
+            console.log("Profile updated!") 
+
+        },
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                Oops! We have encountered an error! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+            </div>');
+            console.log(xhr.status + ": " + xhr.responseText);
+        }
+    });
+};
+</script>
+{% endblock script %}

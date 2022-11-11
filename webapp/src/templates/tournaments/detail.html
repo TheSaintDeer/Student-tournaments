@@ -11,7 +11,7 @@ Tournament detail page
     <h4>Players in team: {{ tournament.players_in_team }}</h4>
 
     <h4>Teams for this tournament:</h2>
-    <h4 style="{% if tournament.owner.id == user.id %} color:red {% endif %} ">Owner: {{ tournament.owner }}</h4>
+    <h4 style="{% if tournament.owner.id == user.id %} color:red {% endif %}">Owner: {{ tournament.owner }}</h4>
 
     {% if team_list %}
     {% for team in team_list %}
@@ -25,9 +25,9 @@ Tournament detail page
       <p>No teams are available.</p>
     {% endif %}
 
-    <a class="btn btn-primary" href="{% url 'teams:create' tournament.pk %}">Create a team</a>
+    <li><a class="btn btn-primary" href="{% url 'teams:create' tournament.pk %}">Create a team</a></li>
     {% if tournament.owner.id == user.id %}
-    <a class="btn btn-primary" href="{% url 'tournaments:delete' tournament.pk %}">Delete</a>
+    <li><a class="btn btn-primary" href="{% url 'tournaments:delete' tournament.pk %}">Delete</a></li>
     {% endif %} 
 
 

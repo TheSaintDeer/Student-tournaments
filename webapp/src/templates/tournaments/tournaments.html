@@ -5,9 +5,16 @@ Tournaments page
 {% endblock title %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1>Current tournaments</h1>
-</div>
+
+<section class="py-5 text-center container">
+  <div class="row py-lg-5">
+    <div class="col-lg-6 col-md-8 mx-auto">
+      <h1 class="fw-light">Current tournaments</h1>
+      </p>
+    </div>
+  </div>
+</section>
+
 <ul>
     {% if tournament_list %}
       <ul>
@@ -21,8 +28,56 @@ Tournaments page
     {% else %}
        <p>No tournaments are available.</p>
     {% endif %}
-    <a class="btn btn-primary mt-2" href="{% url 'tournaments:create' %}">Create new</a>
+    <li><a class="btn btn-primary" href="{% url 'tournaments:create' %}">Create new</a></li>
 
 </ul>
+
+
+
+<div class="album py-5 bg-light">
+  <div class="container">
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      {% if tournament_list %}
+      {% for tournament in tournament_list %}
+      <div class="col">
+        <a href="{% url 'tournaments:detail' tournament.id %}">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <p class="card-text">{{ tournament.name }}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">date</small>
+              </div>
+            </div>
+            <img width="128" height="128" src="{{ tournament.logo.url }}" alt="tournament logo here!">
+
+            <!-- <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Tournament avatar</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Tournament avatar</text></svg> -->
+
+
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <div class="col">
+        <div class="card shadow-sm">
+          <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+
+          <div class="card-body">
+            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+              </div>
+              <small class="text-muted">9 mins</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}
