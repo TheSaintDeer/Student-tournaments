@@ -86,18 +86,18 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'webapp',
-    #     'USER': 'postgres',
-    #     'PASSWORD': 'rootroot',
-    #     'HOST': 'localhost',
-    #     'PORT': '5432',
-    # }
-       'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'szomoprv',
+        'USER': 'szomoprv',
+        'PASSWORD': 'zT1PLuvBFZljuwqTPXjOAbxTgOrvEnvz',
+        'HOST': 'lucky.db.elephantsql.com',
+        'PORT': '',
     }
+    #    'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 
 
