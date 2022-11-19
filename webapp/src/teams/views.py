@@ -7,6 +7,9 @@ from django import http
 from django.contrib import messages
 from teams.forms import PlayerForTeamForm
 from rest_framework.exceptions import NotFound
+from django.http import HttpResponseBadRequest, JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def detail(request, team_id):
@@ -74,6 +77,31 @@ class TeamsCreateView(LoginRequiredMixin, CreateView):
         else:
             return http.HttpResponseForbidden('too much teams!')
 
+
+@login_required
+@csrf_exempt
+def add_player2(request):
+    if request.method == 'POST':
+        player = Player.objects.get(id = request.user.id)
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        profile_form = UpdatePlayerForm(request.POST, request.FILES, instance=player)
+        response_data = {}
+        response_data['result'] = 'Create post successful!'
+        print(request.POST)
+
+        if profile_form.is_valid():
+            profile_form.save()
+
+        if user_form.is_valid():
+            user_form.save()
+
+        return JsonResponse(response_data,
+            content_type="application/json"
+        )
+    else:
+        return JsonResponse({"nothing to see": "this isn't happening"},
+            content_type="application/json"
+        )
 
 class TeamsDeleteView(LoginRequiredMixin, DeleteView):
     model = Team

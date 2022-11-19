@@ -45,7 +45,7 @@ Team detail page
 
                 <!-- Forms -->
                 <div class="form-content">
-                    <form method="post" enctype="multipart/form-data" id="update_form">
+                    <form method="POST" enctype="multipart/form-data" id="update_form">
                         {% csrf_token %}
                         {{ user_form.first_name | as_crispy_field }}
                         {{ user_form.last_name | as_crispy_field}}
@@ -71,32 +71,54 @@ Team detail page
 
 {% block script %}
 <script> 
-    $('#update_form').on('submit', function(event){
-        event.preventDefault();
-        console.log("Form submitted!")  // sanity check
-        update_profile();
-    });
 
-    var alertList = document.querySelectorAll('.alert')
-    alertList.forEach(function (alert) {
-    new bootstrap.Alert(alert)
-    })
-
-function update_profile() {
+$('#id_ajax_upload_form').submit(function(e){
+    e.preventDefault();
+    $form = $(this)
+    var formData = new FormData(this);
     $.ajax({
-        url : "/update_profile/", // the endpoint
-        type : "POST", // http method
-        data : {
-            // data sent with the post request
-            first_name: $('#id_first_name').val(),
-            last_name: $('#id_last_name').val(),
-            username: $('#id_username').val(),
-            email: $('#id_email').val(),
-            bio: $('#id_bio').val(),
-            avatar: $('#id_avatar').val(),
-            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-        }, 
+        url: "/update_profile/",
+        type: 'POST',
+        data: formData,
+        success: function (response) {
+            $('.error').remove();
+            console.log(response)
+            if(response.error){
+                $.each(response.errors, function(name, error){
+                    error = '<small class="text-muted error">' + error + '</small>'
+                    $form.find('[name=' + name + ']').after(error);
+                })
+            }
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+});
+// end
 
+$('#update_form').on('submit', function(event){
+    event.preventDefault();
+    console.log("Form submitted!")  // sanity check
+    $form = $(this)
+    var formData = new FormData(this);
+    update_profile("/update_profile/", "POST", formData);
+});
+
+var alertList = document.querySelectorAll('.alert')
+alertList.forEach(function (alert) {
+new bootstrap.Alert(alert)
+})
+
+function update_profile(url, type, sendData) {
+
+    $.ajax({
+        url : url, // the endpoint
+        type : type, // http method
+        data : sendData, 
+        cache: false,
+        contentType: false,
+        processData: false,
         // handle a successful response
         success : function(json) {
             console.log(json); // log the returned json to the console

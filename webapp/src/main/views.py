@@ -37,6 +37,7 @@ def profile(request):
         profile_form = UpdatePlayerForm(instance=player)
     return render(request, 'profile/profile.html', {'user_form': user_form, 'team_list': team_list, 'profile_form': profile_form, 'player': player})
 
+@login_required
 @csrf_exempt
 def update_profile(request):
     if request.method == 'POST':
