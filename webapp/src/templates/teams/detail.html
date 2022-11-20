@@ -7,15 +7,23 @@ Team detail page
 {% block content %}
 <ul>
     <h1>Team name: {{ team.name }}</h1>
-    <h4>Players for this team:</h2>
+    <h4 style="{% if team.owner.id == user.id %} color:red {% endif %}">Team owner: {{ team.owner }}</h4>
+    <h4>Players for this team:</h4>
+
+    
     {% if players_list %}
     {% for player in players_list %}
-      <li><a href="">{{ player.user.first_name }}</a></li>
+      <img width="128" height="128" src="{{ player.avatar }}" alt="Player avatar">
+      <li><a href="">{{ player.user.username }}</a></li>
     {% endfor %}
     </ul>
     {% else %}
       <p>No players are available.</p>
     {% endif %}
+
+    <li><a class="btn btn-primary" href="{% url 'teams:add_player' team.pk %}?next={{ request.path|urlencode }}">Add a player</a></li>
+    <li><a class="btn btn-primary" href="{% url 'teams:delete' team.pk %}">Delete</a></li>
+
 
 </ul>
 {% endblock content %}
