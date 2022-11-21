@@ -94,10 +94,10 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'szomoprv',
-        'USER': 'szomoprv',
-        'PASSWORD': 'zT1PLuvBFZljuwqTPXjOAbxTgOrvEnvz',
-        'HOST': 'lucky.db.elephantsql.com',
+        'NAME': 'jmqdvfhc',
+        'USER': 'jmqdvfhc',
+        'PASSWORD': 'yWtF2wAMfgKx8VBGrVIQQa_5O5o4Lmm8',
+        'HOST': 'ella.db.elephantsql.com',
         'PORT': '',
     }
     #    'default': {
@@ -141,8 +141,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_ROOT = BASE_DIR / 'static'
-STATIC_URL = 'static/'
+# STATIC_ROOT = BASE_DIR / 'static'
+# STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
 
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -153,7 +156,7 @@ MEDIA_URL = 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATIC_ROOT = ''
+# STATIC_ROOT = ''
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
