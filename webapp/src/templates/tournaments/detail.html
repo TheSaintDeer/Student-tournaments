@@ -6,12 +6,35 @@ Tournament detail page
 
 {% block content %}
 <ul>
-    <h1>Tournament name: {{ tournament.name }}</h1>
-    <h4>Teams number: {{ tournament.teams_number }}</h4>
-    <h4>Players in team: {{ tournament.players_in_team }}</h4>
+    <img class ="mt-4 mb-4" width="128" height="128" src="{{ tournament.logo.url }}" alt="tournament logo here!">
+    <h1 class="mb-5">{{ tournament.name }}</h1>
 
-    <h4>Teams for this tournament:</h2>
-    <h4 style="{% if tournament.owner.id == user.id %} color:red {% endif %}">Owner: {{ tournament.owner }}</h4>
+    <a class="btn btn-primary mb-3 btn-lg" style="width: 8em" href="{% url 'tournaments:bracket' tournament.pk %}">Edit</a>
+
+    <table class="table" style="width: 60%; box-shadow: 0 5px 15px rgb(0 0 0 / 0.3)">
+        <tr>
+            <th class="table-active" style="width: 10rem">Name</th>
+            <td>{{ tournament.name }}</td>
+        </tr>
+        <tr>
+            <th class="table-active" style="height: 16rem">Description</th>
+            <td class="text-break">{{ tournament.description }}</td>
+        </tr>
+        <tr>
+            <th class="table-active">Owner</th>
+            <td>{{ tournament.owner }}</td>
+        </tr>
+        <tr>
+            <th class="table-active">Number of players</th>
+            <td>{{ tournament.teams_number }}</td>
+        </tr>
+        <tr>
+            <th class="table-active">Reward</th>
+            <td>{{ tournament.players_in_team }}</td>
+        </tr>
+    </table>
+
+    <h4>Teams:</h4>
 
     {% if team_list %}
     {% for team in team_list %}
@@ -25,13 +48,11 @@ Tournament detail page
       <p>No teams are available.</p>
     {% endif %}
 
-    <li><a class="btn btn-primary" href="{% url 'teams:create' tournament.pk %}">Create a team</a></li>
+    <li><a class="btn btn-primary mb-3" href="{% url 'teams:create' tournament.pk %}">Create a team</a></li>
     {% if tournament.owner.id == user.id %}
-    <li><a class="btn btn-primary" href="{% url 'tournaments:delete' tournament.pk %}">Delete</a></li>
+    <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:delete' tournament.pk %}">Delete</a></li>
     {% endif %} 
 
-
-    
     <h4>Rounds:</h4>
     
 
