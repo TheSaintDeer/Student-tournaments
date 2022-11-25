@@ -34,13 +34,6 @@ class Team(models.Model):
     def __str__(self) -> str:
         return self.name
 
-
-class Post(models.Model):
-    text = models.TextField(max_length=100, help_text='Enter post text')
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
-    pass
-
-
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     teams = models.ManyToManyField(Team, blank=True)
@@ -58,6 +51,19 @@ class Round(models.Model):
 
     def __str__(self) -> str:
         return f'Round: {self.number}'
+
+    def save(self, *args, **kwargs):
+    # This means that the model isn't saved to the database yet
+        if self._state.adding:
+            # Get the maximum display_id value from the database
+            last_number = self.objects.all().aggregate(largest=models.Max('number'))['largest']
+
+            # aggregate can return None! Check it first.
+            # If it isn't none, just use the last ID specified (which should be the greatest) and add one to it
+            if last_number is not None:
+                self.number = last_number + 1
+
+        super(Round, self).save(*args, **kwargs)
 
 
 class Match(models.Model):

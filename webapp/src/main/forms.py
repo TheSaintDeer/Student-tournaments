@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from main.models import Player, Post
+from main.models import Player
 
 
 # Create your forms here.
@@ -11,7 +11,7 @@ class NewUserForm(UserCreationForm):
 
 	class Meta:
 		model = User
-		fields = ("username", "email", "password1", "password2")
+		fields = ["username", "email", "password1", "password2"]
 
 	def save(self, commit=True):
 		user = super(NewUserForm, self).save(commit=False)
@@ -63,15 +63,3 @@ class UpdatePlayerForm(forms.ModelForm):
     class Meta:
         model = Player
         fields = ['avatar', 'bio']
-
-class PostForm(forms.ModelForm):
-    class Meta:
-        model = Post
-        # exclude = ['author', 'updated', 'created', ]
-        fields = ['text']
-        widgets = {
-            'text': forms.TextInput(attrs={
-                'required': True, 
-                'placeholder': 'Say something...'
-            }),
-        }

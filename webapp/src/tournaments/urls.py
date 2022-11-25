@@ -10,5 +10,6 @@ urlpatterns = [
     path('detail/<int:tournament_id>', views.detail, name='detail'),
     path('create/', TournamentsCreateView.as_view(), name='create'),
     path('detail/<pk>/delete/', TournamentsDeleteView.as_view(), name='delete'),
+    path("create_round/", views.create_round, name="create_round"),
 
 ]

@@ -1,9 +1,14 @@
-from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.shortcuts import redirect, render, get_object_or_404
 from main.models import Tournament, Team, Round
 from django.views.generic.edit import CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import http
-
+from .forms import CreateRoundForm
+from django.contrib.auth.decorators import login_required
+from rest_framework import status
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -18,7 +23,35 @@ def tournaments(request):
 def detail(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     team_list = Team.objects.filter(tournament=tournament)
-    return render(request, 'tournaments/detail.html', {'tournament': tournament, 'team_list': team_list})
+    round_list = Round.objects.filter(tournament=tournament)
+    print(round_list)
+    return render(request, 'tournaments/detail.html', {'tournament': tournament, 'team_list': team_list, 'round_list': round_list})
+
+
+@login_required
+@csrf_exempt
+def create_round(request):
+    if request.method == 'POST':
+        
+
+        print(request.POST)
+        tournament = Tournament.objects.get(id = request.POST['tournament_id'])
+        round = Round.objects.create(tournament = tournament)
+        round.save()
+        
+        return JsonResponse(
+            data=None,
+            safe=False,
+            content_type="application/json",
+            status=status.HTTP_200_OK
+        )
+    else:
+        return JsonResponse(
+            data=None,
+            safe=False,
+            content_type="application/json",
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class TournamentsCreateView(LoginRequiredMixin, CreateView):
@@ -46,13 +79,3 @@ class TournamentsDeleteView(LoginRequiredMixin, DeleteView):
         else:
             return http.HttpResponseForbidden('no permissions!')
 
-
-class RoundCreateView(LoginRequiredMixin, CreateView):
-    model = Round
-    template_name = 'tournaments/tournament_create_form.html'
-    fields = ['name', 'description', 'logo']
-    success_url = '/tournaments'
-
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
