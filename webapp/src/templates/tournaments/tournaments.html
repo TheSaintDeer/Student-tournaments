@@ -27,12 +27,13 @@ Tournaments page
         <a href="{% url 'tournaments:detail' tournament.id %}">
           <div class="card shadow-sm">
             <div class="card-body">
-              <p class="card-text">{{ tournament.name }}</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted">date</small>
-              </div>
+                <img width="128" height="128" src="{{ tournament.logo.url }}" alt="tournament logo here!">
+                <p class="card-text">{{ tournament.name }}</p>
+                <p class="card-text">{{ tournament.owner }}</p>
+{#              <div class="d-flex justify-content-between align-items-center">#}
+{#                  <small class="text-muted">date</small>#}
+{#              </div>#}
             </div>
-            <img width="128" height="128" src="{{ tournament.logo.url }}" alt="tournament logo here!">
 
             <!-- <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Tournament avatar</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Tournament avatar</text></svg> -->
           </div>
@@ -41,22 +42,22 @@ Tournaments page
       {% endfor %}
       {% endif %}
 
-      <div class="col">
-        <div class="card shadow-sm">
-          <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
-
-          <div class="card-body">
-            <p class="card-text">Example card.</p>
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-              </div>
-              <small class="text-muted">9 mins</small>
-            </div>
-          </div>
-        </div>
-      </div>
+{#      <div class="col">#}
+{#        <div class="card shadow-sm">#}
+{#          <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>#}
+{##}
+{#          <div class="card-body">#}
+{#            <p class="card-text">Example card.</p>#}
+{#            <div class="d-flex justify-content-between align-items-center">#}
+{#              <div class="btn-group">#}
+{#                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>#}
+{#                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>#}
+{#              </div>#}
+{#              <small class="text-muted">9 mins</small>#}
+{#            </div>#}
+{#          </div>#}
+{#        </div>#}
+{#      </div>#}
     </div>
   </div>
 </div>

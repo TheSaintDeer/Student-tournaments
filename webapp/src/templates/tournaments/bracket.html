@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Tournament bracket page
+{% endblock title %}
+{% block content %}
+<ul>
+<div class="row" id="main">
+
+</div>
+</ul>
+{% endblock content %}
+
+{% block script %}
+    <script>
+    // Main function
+        var list = JSON.parse('{{ team_list|escapejs }}');
+        var team_list = [];
+        for(var i = 0; i < list.length; i++){
+            team_list.push(list[i].fields.name);
+         }
+        var bracket = new Bracket(team_list);
+        bracket.rounds_list[0][0].setWinner(bracket.rounds_list[0][0].team_one);
+        bracket.rounds_list[0][1].setWinner(bracket.rounds_list[0][1].team_one);
+        bracket.rounds_list[0][2].setWinner(bracket.rounds_list[0][2].team_one);
+        bracket.rounds_list[0][3].setWinner(bracket.rounds_list[0][3].team_one);
+        bracket.startNextRound();
+        bracket.rounds_list[1][0].setWinner(bracket.rounds_list[0][1].team_one);
+        bracket.rounds_list[1][1].setWinner(bracket.rounds_list[0][2].team_one);
+        bracket.startNextRound();
+        for(var k = 0; k < bracket.rounds_list.length; k++){
+            $('#main').append('<div class="col-sm-2 mt-3">' +
+                '<div id = "brackets' + k + '"></div>' +
+                '</div>')
+            for(var n = 0; n < bracket.rounds_list[k].length; n++){
+                $('#brackets' + k).append(
+                    '<div class="card body mb-3 mt-3>' +
+                    '<h5 class="card-title">' + bracket.rounds_list[k][n].team_one + ' vs ' + bracket.rounds_list[k][n].team_two + '</h5>' +
+                    '<div class="btn btn-primary" href="">Edit</div>' +
+                    '</div>'
+            );
+            }
+         }
+        console.log('stop');
+        {#$(document).ready(function (){#}
+        {#   $.ajax({#}
+        {#       url: '/tournaments/bracket/3',#}
+        {#       type: 'get',#}
+        {#       data: {#}
+        {#           text_t: "Testing test"#}
+        {#       },#}
+        {#       success: function (response){#}
+        {#           $('#id').append('New text +++')#}
+        {#       }#}
+        {#   });#}
+        {# });#}
+
+    </script>
+{% endblock script %}
