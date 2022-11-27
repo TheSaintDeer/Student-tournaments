@@ -70,6 +70,7 @@ function update_match(type, sendData) {
         success : function(response) {
             console.log(response); // log the returned json to the console
             if(response.result === "success"){
+                window.location=document.referrer;
                 $('#messages').html('<div class="alert alert-success alert-dismissible fade show" role="alert"> \
                 Match edited! \
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \

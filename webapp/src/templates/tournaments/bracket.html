@@ -92,6 +92,7 @@ Tournament bracket page
                success: function (response){
                    console.log(response.result);
                 if(response.result === "success"){
+                    location.reload();
                 $('#messages').html('<div class="alert alert-success alert-dismissible fade show" role="alert"> \
                 Success! \
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
