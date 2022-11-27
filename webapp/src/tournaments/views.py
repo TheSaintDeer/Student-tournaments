@@ -2,7 +2,7 @@ import math
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from main.models import Tournament, Team, Round, Match
+from main.models import Tournament, Team, Round, Match, Player
 from django.views.generic.edit import CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.serializers import serialize

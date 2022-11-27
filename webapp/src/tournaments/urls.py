@@ -13,5 +13,6 @@ urlpatterns = [
     path('bracket/<int:tournament_id>', views.bracket, name='bracket'),
     path('create/', TournamentsCreateView.as_view(), name='create'),
     path('detail/<pk>/delete/', TournamentsDeleteView.as_view(), name='delete'),
+    path('leaderdoard/', views.leaderdoard, name='leaderdoard'),
 
 ]
