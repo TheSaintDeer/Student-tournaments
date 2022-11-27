@@ -1,13 +1,19 @@
-from django.shortcuts import render, get_object_or_404
-from main.models import Tournament, Team, Round, Match
+import math
+from django.http import JsonResponse
+from django.shortcuts import redirect, render, get_object_or_404
+from main.models import Tournament, Team, Round, Match, Player
 from django.views.generic.edit import CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.serializers import serialize
 from django.http import JsonResponse
 from django.views.generic import View, TemplateView
 from django import http
-
-
+from .forms import CreateRoundForm, create_match_form, ApproveTournamentForm
+from django.contrib.auth.decorators import login_required
+from rest_framework import status
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.forms import formset_factory, modelformset_factory
+from django.contrib import messages
 # Create your views here.
 
 def tournaments(request):
@@ -41,12 +47,108 @@ def bracket(request, tournament_id):
 def detail(request, tournament_id):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     team_list = Team.objects.filter(tournament=tournament)
-    return render(request, 'tournaments/detail.html', {'tournament': tournament, 'team_list': team_list})
+    round_list = Round.objects.filter(tournament=tournament)
+
+    print(round_list)
+    return render(request, 'tournaments/detail.html', {'tournament': tournament, 'team_list': team_list, 'round_list': round_list})
+
+
+@login_required
+def create_round(request, tournament_id):
+
+    tournament = Tournament.objects.get(id = tournament_id)
+    round_form = CreateRoundForm(tournament=tournament)
+    if request.method == "POST":
+        round_form = CreateRoundForm(data = request.POST, tournament=tournament)
+
+        if round_form.is_valid():
+            round_form.save()
+        else:
+            return render(request, 'tournaments/create_round.html', {'round_form': round_form})
+
+        return redirect("tournaments:detail", tournament_id=tournament_id)
+    else:
+        return render(request, 'tournaments/create_round.html', {'round_form': round_form})
+
+
+def generate_matches(request, round_id):
+    round = Round.objects.get(id = round_id)
+    tournament = round.tournament
+    teams_list = Team.objects.filter(tournament = tournament)
+    MatchForm = create_match_form(teams_list, round)
+    MatchFormSet = modelformset_factory(Match, form=MatchForm)
+
+    if request.method == "POST":
+        match_formset = MatchFormSet(request.POST)
+        if match_formset.is_valid():
+            match_formset.save()
+        else:
+            return render(request, 'tournaments/generate_matches.html', {'match_formset': match_formset})
+
+        return redirect("tournaments:detail", tournament_id=tournament.id)
+    else:
+        match_formset = MatchFormSet()
+        return render(request, 'tournaments/generate_matches.html', {'match_formset': match_formset})
+ 
+def check_form_data(request, matches_formset, teams_list):
+    teams_list = list(teams_list)
+
+    if matches_formset.cleaned_data:
+        data = matches_formset.cleaned_data
+    else:
+        messages.error(request, "Unsuccessful operation. Please, setup all team matches.")
+        return False
+
+    index = 0
+    for item in data:
+        if data[index]:
+
+            blue = data[index]['blue']
+            if blue in teams_list:
+                teams_list.remove(blue)
+
+            red = data[index]['red']
+            if red in teams_list:
+                teams_list.remove(red)
+            index += 1
+        else:
+            messages.error(request, "Unsuccessful operation. Please, setup all team matches.")
+            return False
+    if teams_list:
+        messages.error(request, "Unsuccessful operation. One of teams has two matches.")
+        return False
+        
+    return True
+
+def approve(request, tournament_id):
+
+    tournament = Tournament.objects.get(id = tournament_id)
+    
+
+    if request.method == "POST":
+        
+        approve_form = ApproveTournamentForm(instance=tournament, data=request.POST)
+        if request.user.is_superuser:
+            approve_form.save()
+            return redirect("tournaments:detail", tournament_id=tournament_id)
+        else:
+            messages.error(request, "You dont admin privileges.")
+
+        return render(request, 'tournaments/approve_tournament.html', {'approve_form': approve_form})
+
+    else:
+        approve_form = ApproveTournamentForm(instance=tournament)
+        return render(request, 'tournaments/approve_tournament.html', {'approve_form': approve_form})
+
+    pass
 
 def edit(request, match_id):
     match = get_object_or_404(Match, pk=match_id)
     return render(request, 'tournaments/edit.html', {'match': match})
 
+def leaderdoard(request):
+    players = Player.objects.all()
+    return render(request, 'tournaments/leaderboard.html', {'players': players})
 
 class TournamentsCreateView(LoginRequiredMixin, CreateView):
     model = Tournament
@@ -73,13 +175,3 @@ class TournamentsDeleteView(LoginRequiredMixin, DeleteView):
         else:
             return http.HttpResponseForbidden('no permissions!')
 
-
-class RoundCreateView(LoginRequiredMixin, CreateView):
-    model = Round
-    template_name = 'tournaments/tournament_create_form.html'
-    fields = ['name', 'description', 'logo']
-    success_url = '/tournaments'
-
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)

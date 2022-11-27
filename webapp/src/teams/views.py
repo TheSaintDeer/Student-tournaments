@@ -1,5 +1,6 @@
 from urllib import request
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from main.models import Team, Player, Tournament
 from django.views.generic.edit import CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -17,12 +18,16 @@ def detail(request, team_id):
     players_list = Player.objects.filter(teams__id = team_id)
     return render(request, 'teams/detail.html', {'team': current_team, 'players_list': players_list})
 
-
+@login_required
 def add_player(request, team_id):
 
+    team = Team.objects.get(id = team_id)
+    players_queryset = Player.objects.exclude(teams__id = team_id)
+
     if request.method == 'POST':
-        form = PlayerForTeamForm(team_id, request.POST)
-        team = Team.objects.get(id = team_id)
+        
+        form = PlayerForTeamForm(players_queryset, request.POST)
+        tournament = Tournament.objects.get(id = team.tournament.id)
         player_to_add = Player.objects.get(id = request.POST['player'])
         amount_of_players = Player.objects.filter(teams__id = team.id).count()
 
@@ -30,7 +35,10 @@ def add_player(request, team_id):
         if (team.owner.pk == request.user.id): 
 
             # TODO check if player exist in other teams of this tour
-
+            for item in tournament.team_set.all():
+                list_of_players = list(item.player_set.all())
+                if player_to_add in list_of_players:
+                    return http.HttpResponseNotFound("Player already has a team!")
 
             # check if amount of players in team is less than max players in team in this tournament
             if (amount_of_players < team.tournament.players_in_team):             
@@ -51,8 +59,45 @@ def add_player(request, team_id):
         return http.HttpResponseNotFound("You are not a team owner.")
 
     else:
-        form = PlayerForTeamForm(team_id=team_id)
-    return render(request, 'teams/player_for_team.html', {'form': form})
+        form = PlayerForTeamForm(players_queryset)
+    return render(request, 'teams/add_player_to_team.html', {'form': form})
+
+def remove_player(request, team_id):
+
+    team = Team.objects.get(id = team_id)
+    players_queryset = team.player_set.all()
+
+    if request.method == 'POST':
+       
+        form = PlayerForTeamForm(players_queryset, request.POST)
+
+        # if request user if a team owner, than he can remove players from this team
+        if (team.owner.pk == request.user.id): 
+         
+            if form.is_valid():
+
+                player_to_remove = Player.objects.get(id = request.POST['player'])
+
+                if request.user == player_to_remove.user:
+                    messages.warning(request, "You cant remove team owner.")
+                    return render(request, 'teams/remove_player_from_team.html', {'form': form})
+
+                # remove player from team
+                player_to_remove.teams.remove(team)               
+                print(str(player_to_remove) + ' was removed from team ' + str(team))
+
+                return redirect("teams:detail", team_id=team_id)
+            else:
+                messages.warning(request, "Too much players in team.")
+                return render(request, 'teams/remove_player_from_team.html', {'form': form})
+
+        # if request user is not an owner, than response forbidden
+        messages.warning(request, "You are not a team owner.")
+        return render(request, 'teams/remove_player_from_team.html', {'form': form})
+
+    else:
+        form = PlayerForTeamForm(players_queryset=players_queryset)
+    return render(request, 'teams/add_player_to_team.html', {'form': form})
 
 
 class TeamsCreateView(LoginRequiredMixin, CreateView):
@@ -62,46 +107,29 @@ class TeamsCreateView(LoginRequiredMixin, CreateView):
     success_url = '/tournaments'
 
     def form_valid(self, form):
-        current_tournament = Tournament.objects.get(pk = self.kwargs['pk'])
-        
-
+        tournament_id = self.kwargs['pk']
+        current_tournament = Tournament.objects.get(pk = tournament_id)
+    
         if Team.objects.filter(tournament = current_tournament).count() < current_tournament.teams_number:
 
             # TODO check if owner exist in other teams of this tour
+            player = Player.objects.get(pk = self.request.user.pk)
+            if (Player.objects.filter(teams__tournament = current_tournament).contains(player)):
+                return http.HttpResponseForbidden('Player already has a team.')
+
 
             form.instance.owner = self.request.user
             form.instance.tournament = current_tournament
             super().form_valid(form)
-            Player.objects.get(pk = self.request.user.pk).teams.add(self.object.id)
-            return http.HttpResponseRedirect(self.success_url)
+            player.teams.add(self.object.id)
+            return super().form_valid(form)
+            
         else:
             return http.HttpResponseForbidden('too much teams!')
 
+    def get_success_url(self):
+            return reverse("tournaments:detail", kwargs={'tournament_id': self.kwargs['pk']})
 
-@login_required
-@csrf_exempt
-def add_player2(request):
-    if request.method == 'POST':
-        player = Player.objects.get(id = request.user.id)
-        user_form = UpdateUserForm(request.POST, instance=request.user)
-        profile_form = UpdatePlayerForm(request.POST, request.FILES, instance=player)
-        response_data = {}
-        response_data['result'] = 'Create post successful!'
-        print(request.POST)
-
-        if profile_form.is_valid():
-            profile_form.save()
-
-        if user_form.is_valid():
-            user_form.save()
-
-        return JsonResponse(response_data,
-            content_type="application/json"
-        )
-    else:
-        return JsonResponse({"nothing to see": "this isn't happening"},
-            content_type="application/json"
-        )
 
 class TeamsDeleteView(LoginRequiredMixin, DeleteView):
     model = Team

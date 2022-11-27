@@ -23,8 +23,8 @@ Team detail page
                 <!-- Teams -->
                 <div class="">
                     <h4>Teams of this player</h4>
-                    {% if team_list %}
-                    {% for team in team_list %}
+                    {% if player.teams.all %}
+                    {% for team in player.teams.all %}
                         <li>
                             <img width="100" height="100" src="{{ team.logo.url }}" alt="team logo here!">
                             <a class="m-2" href="{% url 'teams:detail' team.id %}">{{ team.name }}</a>
@@ -71,31 +71,6 @@ Team detail page
 
 {% block script %}
 <script> 
-
-$('#id_ajax_upload_form').submit(function(e){
-    e.preventDefault();
-    $form = $(this)
-    var formData = new FormData(this);
-    $.ajax({
-        url: "/update_profile/",
-        type: 'POST',
-        data: formData,
-        success: function (response) {
-            $('.error').remove();
-            console.log(response)
-            if(response.error){
-                $.each(response.errors, function(name, error){
-                    error = '<small class="text-muted error">' + error + '</small>'
-                    $form.find('[name=' + name + ']').after(error);
-                })
-            }
-        },
-        cache: false,
-        contentType: false,
-        processData: false
-    });
-});
-// end
 
 $('#update_form').on('submit', function(event){
     event.preventDefault();

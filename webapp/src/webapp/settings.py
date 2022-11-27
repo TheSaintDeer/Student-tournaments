@@ -94,9 +94,9 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'jmqdvfhc',
-        'USER': 'jmqdvfhc',
-        'PASSWORD': 'yWtF2wAMfgKx8VBGrVIQQa_5O5o4Lmm8',
+        'NAME': 'panlragl',
+        'USER': 'panlragl',
+        'PASSWORD': 'bnJtRj5YZlvF50M0IxNLhmIe--A0KP_b',
         'HOST': 'ella.db.elephantsql.com',
         'PORT': '',
     }

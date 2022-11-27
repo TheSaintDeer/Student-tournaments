@@ -15,6 +15,7 @@ class Tournament(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     teams_number = models.IntegerField(default=2)
     players_in_team = models.IntegerField(default=1)
+    approved_by_admin = models.BooleanField(default=False)
     pass
 
     def __str__(self) -> str:
@@ -34,18 +35,12 @@ class Team(models.Model):
     def __str__(self) -> str:
         return self.name
 
-
-class Post(models.Model):
-    text = models.TextField(max_length=100, help_text='Enter post text')
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
-    pass
-
-
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     teams = models.ManyToManyField(Team, blank=True)
     bio = models.TextField(max_length=100, help_text='Your bio', blank=True, null=True)
     avatar = models.ImageField(default='default_logos/player_default.png', upload_to='players_avatar', blank=True)
+    points = models.IntegerField(default=0)
     pass
 
     def __str__(self) -> str:
@@ -55,9 +50,27 @@ class Player(models.Model):
 class Round(models.Model):
     number = models.IntegerField(default=1)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    reward_points = models.IntegerField(default=10)
 
     def __str__(self) -> str:
         return f'Round: {self.number}'
+
+    def save(self, *args, **kwargs):
+    # This means that the model isn't saved to the database yet
+        if self._state.adding:
+
+            last_number = None
+            # Get the maximum number value from the database
+            round = Round.objects.filter(tournament = self.tournament)
+            if round.exists():
+                last_number = round.aggregate(largest=models.Max('number'))['largest']
+
+            # aggregate can return None! Check it first.
+            # If it isn't none, just use the last ID specified (which should be the greatest) and add one to it
+            if last_number is not None:
+                self.number = last_number + 1
+
+        super(Round, self).save(*args, **kwargs)
 
 
 class Match(models.Model):

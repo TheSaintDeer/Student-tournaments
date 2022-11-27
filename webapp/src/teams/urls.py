@@ -10,6 +10,7 @@ urlpatterns = [
     path('create/<pk>', TeamsCreateView.as_view(), name='create'),   
     path('detail/<pk>/delete/', TeamsDeleteView.as_view(), name='delete'), 
     path('add_player/<int:team_id>', views.add_player, name='add_player'), 
+    path('remove_player/<int:team_id>', views.remove_player, name='remove_player'), 
 
 ]
 

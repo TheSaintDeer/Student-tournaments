@@ -2,23 +2,34 @@
 {% load crispy_forms_tags %}   
 
 {% block title %}
-Add a player to team
+Remove player from team
 {% endblock title %}
 
 {% block content %}
 <div class="container py-5">
     <div class="mx-auto" style="width: 500px;">
+
+    {% if messages %}
+    <ul class="messages">
+    {% for message in messages %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+    </ul>
+    {% endif %} 
     <form method="POST" enctype="multipart/form-data">
     
         <!-- Security token -->
         {% csrf_token %}
     
-        <!-- Using the formset -->
+        <!-- Using the form -->
         {{ form | crispy }}
         
         <!-- <input type="submit" value="Submit"> -->
         <div class="text-center mb-3">
-	    	<button class="btn btn-primary" type="submit">Submit</button>
+	    	<button class="btn btn-danger" type="submit">Remove</button>
         </div> 
         <input type="hidden" name="next" value="{{ request.GET.next }}">
     </form>

@@ -22,6 +22,7 @@ Team detail page
     {% endif %}
 
     <li><a class="btn btn-primary" href="{% url 'teams:add_player' team.pk %}?next={{ request.path|urlencode }}">Add a player</a></li>
+    <li><a class="btn btn-danger" href="{% url 'teams:remove_player' team.pk %}?next={{ request.path|urlencode }}">Remove a player</a></li>
     <li><a class="btn btn-primary" href="{% url 'teams:delete' team.pk %}">Delete</a></li>
 
 
