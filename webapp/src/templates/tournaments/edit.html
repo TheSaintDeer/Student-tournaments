@@ -5,6 +5,100 @@ Edit bracket page
 {% endblock title %}
 {% block content %}
 <ul>
-
+<div class="container p-5 my-5 border justify-content-md-center">
+<div id="messages"></div>
+<form action="" method="POST" id="update_form">{% csrf_token %}
+        <div class="row g-2">
+            <div class="col-md-4">
+                <label for="blue_team" class="form-label">Blue Team</label>
+                <select id="blue_team" class="form-select" name="blue_team">
+                <option selected>{{ match.blue }}</option>
+                    {% for team in team_list %}
+                        {% if not team.selected %}
+                            <option>{{ team }}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+            </div>
+            <div class="col-md-4 mt-3">
+                <label for="red_team" class="for_label">Red Team</label>
+                <select id="red_team" class="form-select" name="red_team">
+                <option selected>{{ match.red }}</option>
+                    {% for team in team_list %}
+                        {% if not team.selected %}
+                            <option>{{ team }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row g-2 mt-3 mb-3">
+                <div class="col-auto">
+                <input type="text" id="blue_score" class="form-control" placeholder="Blue team score" name="blue_score">
+            </div>
+            <p class="col-auto"> - </p>
+            <div class="col-auto">
+                <input type="text" id="red_score" class="form-control" placeholder="Red team score" name="red_score">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success mx-2">Submit</button>
+</form>
+</div>
 </ul>
 {% endblock content %}
+
+{% block script %}
+<script>
+
+$('#update_form').on('submit', function(event){
+    event.preventDefault();
+    console.log("Form submitted!")  // sanity check
+    $form = $(this)
+    var formData = new FormData(this);
+    update_match("POST", formData);
+});
+function update_match(type, sendData) {
+
+    $.ajax({
+        url : '' + '{{ match.id }}' + '', // the endpoint
+        type : type, // http method
+        data : sendData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        // handle a successful response
+        success : function(response) {
+            console.log(response); // log the returned json to the console
+            if(response.result === "success"){
+                $('#messages').html('<div class="alert alert-success alert-dismissible fade show" role="alert"> \
+                Match edited! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+                </div>');
+            }else if(response.result === "error_same"){
+                $('#messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                Same teams were selected! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+                </div>');
+            }else if(response.result === "error_none"){
+                $('#messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                Teams are not selected! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+                </div>');
+            }
+            console.log("Profile updated!")
+
+        },
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                Oops! We have encountered an error! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+            </div>');
+            console.log(xhr.status + ": " + xhr.responseText);
+        }
+    });
+};
+
+</script>
+
+{% endblock script %}

@@ -16,6 +16,7 @@ class Tournament(models.Model):
     teams_number = models.IntegerField(default=2)
     players_in_team = models.IntegerField(default=1)
     approved_by_admin = models.BooleanField(default=False)
+    bracket_exists = models.BooleanField(default=False)
     pass
 
     def __str__(self) -> str:
@@ -30,6 +31,7 @@ class Team(models.Model):
     logo = models.ImageField(default='default_logos/team_default.png', upload_to='team_logo')
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    selected = models.BooleanField(default=False)
     pass
 
     def __str__(self) -> str:
@@ -50,6 +52,7 @@ class Player(models.Model):
 class Round(models.Model):
     number = models.IntegerField(default=1)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    finished = models.BooleanField(default=False)
     reward_points = models.IntegerField(default=10)
 
     def __str__(self) -> str:
@@ -74,11 +77,12 @@ class Round(models.Model):
 
 
 class Match(models.Model):
-    blue = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='blue')
-    red = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='red')
+    blue = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='blue', null=True, blank=True)
+    red = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='red', null=True, blank=True)
     blue_score = models.IntegerField(default=0)
     red_score = models.IntegerField(default=0)
     round = models.ForeignKey(Round, on_delete=models.CASCADE)
+    finished = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f'{self.blue} vs {self.red}'

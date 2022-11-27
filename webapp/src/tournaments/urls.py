@@ -11,7 +11,6 @@ urlpatterns = [
     path('detail/<int:tournament_id>', views.detail, name='detail'),
     path('edit/<int:match_id>', views.edit, name='edit'),
     path('bracket/<int:tournament_id>', views.bracket, name='bracket'),
-    # path('bracket/<pk>', BracketView.as_view(), name='bracket'),
     path('create/', TournamentsCreateView.as_view(), name='create'),
     path('detail/<pk>/delete/', TournamentsDeleteView.as_view(), name='delete'),
 

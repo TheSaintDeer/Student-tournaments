@@ -5,6 +5,73 @@ Tournament bracket page
 {% endblock title %}
 {% block content %}
 <ul>
+<div class="mt-3" id="messages">
+
+</div>
+<div class="row g-2">
+    <div class="col-sm-2 mt-3">
+        <button type="button" id ="create" class="btn btn-success btn-lg">Create Grid</button>
+    </div>
+{#    <form action="" method="POST" id="finish">{% csrf_token %}#}
+    <div class="col-sm-2 mt-3">
+        <button type="submit" id="result" class="btn btn-success btn-lg">Finish round</button>
+    </div>
+{#    </form>#}
+</div>
+    {% if t_jinja.bracket_exists %}
+        <script>document.getElementById("create").disabled = true</script>
+        <div class="row">
+            {% for round in round_list %}
+                {% if round.tournament == t_jinja %}
+{#          NOT FINISHED ROUND                               #}
+                {% if not round.finished %}
+                    {% ifchanged round.finished %}
+                        <div class="col-sm-2 mt-3">
+                            {% for match in match_list %}
+                                {% if match.round == round %}
+                                    <div class="card">
+                                        <a class="card-body mb-3 mt-3 mx-auto" href="{% url 'tournaments:edit' match.id %}">
+                                            <h5 class="card-title">{{ match.blue }} vs {{ match.red }}</h5>
+                                            <p class="card-text mx-5">{{ match.blue_score }} - {{ match.red_score }}</p>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="col-sm-2 mt-3">
+                            {% for match in match_list %}
+                                {% if match.round == round %}
+                                    <div class="card">
+                                        <div class="card-body mb-3 mt-3 mx-auto">
+                                            <h5 class="card-title">{{ match.blue }} vs {{ match.red }}</h5>
+                                            <p class="card-text mx-5">{{ match.blue_score }} - {{ match.red_score }}</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endifchanged %}
+{#          FINISHED ROUND          #}
+                {% else %}
+                    <div class="col-sm-2 mt-3">
+                    {% for match in match_list %}
+                        {% if match.round == round %}
+                            <div class="card">
+                                <div class="card-body mb-3 mt-3 mx-auto">
+                                    <h5 class="card-title">{{ match.blue }} vs {{ match.red }}</h5>
+                                    <p class="card-text mx-5">{{ match.blue_score }} - {{ match.red_score }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
 <div class="row" id="main">
 
 </div>
@@ -14,46 +81,87 @@ Tournament bracket page
 {% block script %}
     <script>
     // Main function
+    $(document).ready(function (){
+       $('#result').click(function (){
+           $.ajax({
+               url: '' + '{{ tournament.id }}' + '',
+               type: "GET",
+               data: {
+                   result_button: 'pressed'
+               },
+               success: function (response){
+                   console.log(response.result);
+                if(response.result === "success"){
+                $('#messages').html('<div class="alert alert-success alert-dismissible fade show" role="alert"> \
+                Success! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+                </div>');
+                }
+                else if(response.result === "error_none"){
+                $('#messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                Need to fill matches! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+                </div>');
+                }else if(response.result === "error_tie"){
+                $('#messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                Cannot finish match with tie! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+                </div>');
+            }
+               }
+           })
+       });
+       $("#create").click(function (){
+           var bracket_exists = JSON.parse('{{ tournament|escapejs }}')[0].fields.bracket_exists;
+           if(bracket_exists === false){
+               var created_bracket = createGrid();
+                $.ajax({
+                    url: '' + '{{ tournament.id }}' + '',
+                    type: "GET",
+                    data: {
+                        bracket_data: JSON.stringify(created_bracket),
+                    },
+                    success: function (response){
+                        $("#create").attr("disabled", true);
+                        appendGrid(created_bracket, response.matches);
+                    }
+                })
+            }
+       });
+    });
+    function createGrid(){
         var list = JSON.parse('{{ team_list|escapejs }}');
         var team_list = [];
         for(var i = 0; i < list.length; i++){
             team_list.push(list[i].fields.name);
          }
-        var bracket = new Bracket(team_list);
-        bracket.rounds_list[0][0].setWinner(bracket.rounds_list[0][0].team_one);
-        bracket.rounds_list[0][1].setWinner(bracket.rounds_list[0][1].team_one);
-        bracket.rounds_list[0][2].setWinner(bracket.rounds_list[0][2].team_one);
-        bracket.rounds_list[0][3].setWinner(bracket.rounds_list[0][3].team_one);
-        bracket.startNextRound();
-        bracket.rounds_list[1][0].setWinner(bracket.rounds_list[0][1].team_one);
-        bracket.rounds_list[1][1].setWinner(bracket.rounds_list[0][2].team_one);
-        bracket.startNextRound();
+        return new Bracket(team_list);
+    }
+    function appendGrid(bracket, match_list){
         for(var k = 0; k < bracket.rounds_list.length; k++){
             $('#main').append('<div class="col-sm-2 mt-3">' +
                 '<div id = "brackets' + k + '"></div>' +
                 '</div>')
             for(var n = 0; n < bracket.rounds_list[k].length; n++){
-                $('#brackets' + k).append(
-                    '<div class="card body mb-3 mt-3>' +
-                    '<h5 class="card-title">' + bracket.rounds_list[k][n].team_one + ' vs ' + bracket.rounds_list[k][n].team_two + '</h5>' +
-                    '<div class="btn btn-primary" href="">Edit</div>' +
+                if(k === 0){
+                    $('#brackets' + k).append(
+                    '<a href="/tournaments/edit/' + match_list[n] + '">' +
+                    '<div class="card body mb-3 mt-3">' +
+                    '<h5 class="card-title mx-auto">None vs None</h5>' +
+                    '<p class="card-text mx-auto">0 - 0</p>' +
+                    '</div>' +
+                    '</a>'
+                    );
+                }else{
+                    $('#brackets' + k).append(
+                    '<div class="card body mb-3 mt-3">' +
+                    '<h5 class="card-title">None vs None</h5>' +
                     '</div>'
-            );
+                    );
+                }
             }
          }
-        console.log('stop');
-        {#$(document).ready(function (){#}
-        {#   $.ajax({#}
-        {#       url: '/tournaments/bracket/3',#}
-        {#       type: 'get',#}
-        {#       data: {#}
-        {#           text_t: "Testing test"#}
-        {#       },#}
-        {#       success: function (response){#}
-        {#           $('#id').append('New text +++')#}
-        {#       }#}
-        {#   });#}
-        {# });#}
+    }
 
     </script>
 {% endblock script %}
