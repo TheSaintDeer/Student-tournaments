@@ -40,6 +40,7 @@ class Player(models.Model):
     teams = models.ManyToManyField(Team, blank=True)
     bio = models.TextField(max_length=100, help_text='Your bio', blank=True, null=True)
     avatar = models.ImageField(default='default_logos/player_default.png', upload_to='players_avatar', blank=True)
+    points = models.IntegerField(default=0)
     pass
 
     def __str__(self) -> str:

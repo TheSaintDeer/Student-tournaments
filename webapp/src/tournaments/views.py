@@ -1,7 +1,7 @@
 import math
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
-from main.models import Tournament, Team, Round, Match
+from main.models import Tournament, Team, Round, Match, Player
 from django.views.generic.edit import CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.serializers import serialize
@@ -146,6 +146,9 @@ def edit(request, match_id):
     match = get_object_or_404(Match, pk=match_id)
     return render(request, 'tournaments/edit.html', {'match': match})
 
+def leaderdoard(request):
+    players = Player.objects.all()
+    return render(request, 'tournaments/leaderboard.html', {'players': players})
 
 class TournamentsCreateView(LoginRequiredMixin, CreateView):
     model = Tournament

@@ -17,6 +17,13 @@ import json
 def index(request):
     return render(request, 'main/index.html')
 
+
+def user_detail(request, user_id):
+    user = User.objects.get(id = user_id)
+    player = Player.objects.get(user = user)
+    return render(request, 'main/user_detail.html', {'user': user, 'player': player})
+
+
 @login_required
 def profile(request):
     player = Player.objects.get(id=request.user.id)
@@ -38,7 +45,7 @@ def profile(request):
         user_form = UpdateUserForm(instance=request.user)
         profile_form = UpdatePlayerForm(instance=player)
     return render(request, 'profile/profile.html',
-                  {'user_form': user_form, 'team_list': team_list, 'profile_form': profile_form, 'player': player})
+                  {'user_form': user_form, 'profile_form': profile_form, 'player': player})
 
 
 

@@ -10,7 +10,7 @@
         <link href="{% static 'bootstrap-5.0.2-dist/css/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
         <script src="{% static 'js/jquery-3.6.1.min.js' %}" type="text/javascript"></script>
         <script src="{% static 'bootstrap-5.0.2-dist/js/bootstrap.js' %}" type="text/javascript"></script>
-        <script src="{% static 'js/underscore-min.js' %}" type="text/javascript"></script>
+        <!-- <script src="{% static 'js/underscore-min.js' %}" type="text/javascript"></script> -->
     <script src="{% static 'js/models.js' %}" type="text/javascript"></script>
     </head>
     <body>
@@ -34,7 +34,9 @@
                             <li class="nav-item mt-2">
                                 <a class="nav-link" href="{% url 'tournaments:tournaments' %}">Current tournaments</a>
                             </li>
-
+                            <li class="nav-item mt-2">
+                                <a class="nav-link" href="{% url 'tournaments:leaderdoard' %}">Leaderdoard</a>
+                            </li>
                             {% if user.is_authenticated %}
                             <li class="nav-item mt-2">
                                 <a class="nav-link" href="{% url 'main:profile' %}">Profile</a>

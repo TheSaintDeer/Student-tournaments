@@ -21,9 +21,12 @@ def detail(request, team_id):
 @login_required
 def add_player(request, team_id):
 
+    team = Team.objects.get(id = team_id)
+    players_queryset = Player.objects.exclude(teams__id = team_id)
+
     if request.method == 'POST':
-        form = PlayerForTeamForm(team_id, request.POST)
-        team = Team.objects.get(id = team_id)
+        
+        form = PlayerForTeamForm(players_queryset, request.POST)
         tournament = Tournament.objects.get(id = team.tournament.id)
         player_to_add = Player.objects.get(id = request.POST['player'])
         amount_of_players = Player.objects.filter(teams__id = team.id).count()
@@ -56,8 +59,45 @@ def add_player(request, team_id):
         return http.HttpResponseNotFound("You are not a team owner.")
 
     else:
-        form = PlayerForTeamForm(team_id=team_id)
-    return render(request, 'teams/player_for_team.html', {'form': form})
+        form = PlayerForTeamForm(players_queryset)
+    return render(request, 'teams/add_player_to_team.html', {'form': form})
+
+def remove_player(request, team_id):
+
+    team = Team.objects.get(id = team_id)
+    players_queryset = team.player_set.all()
+
+    if request.method == 'POST':
+       
+        form = PlayerForTeamForm(players_queryset, request.POST)
+
+        # if request user if a team owner, than he can remove players from this team
+        if (team.owner.pk == request.user.id): 
+         
+            if form.is_valid():
+
+                player_to_remove = Player.objects.get(id = request.POST['player'])
+
+                if request.user == player_to_remove.user:
+                    messages.warning(request, "You cant remove team owner.")
+                    return render(request, 'teams/remove_player_from_team.html', {'form': form})
+
+                # remove player from team
+                player_to_remove.teams.remove(team)               
+                print(str(player_to_remove) + ' was removed from team ' + str(team))
+
+                return redirect("teams:detail", team_id=team_id)
+            else:
+                messages.warning(request, "Too much players in team.")
+                return render(request, 'teams/remove_player_from_team.html', {'form': form})
+
+        # if request user is not an owner, than response forbidden
+        messages.warning(request, "You are not a team owner.")
+        return render(request, 'teams/remove_player_from_team.html', {'form': form})
+
+    else:
+        form = PlayerForTeamForm(players_queryset=players_queryset)
+    return render(request, 'teams/add_player_to_team.html', {'form': form})
 
 
 class TeamsCreateView(LoginRequiredMixin, CreateView):

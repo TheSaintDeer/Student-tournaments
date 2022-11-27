@@ -33,7 +33,7 @@ def create_match_form(teams_queryset, round):
                 self.instance.round = round
         class Meta:
             model = Match
-            fields = ['blue', 'red']
+            fields = ['blue', 'red', 'blue_score', 'red_score']
         
         def clean(self):
 

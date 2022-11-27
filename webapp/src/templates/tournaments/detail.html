@@ -7,14 +7,7 @@ Tournament detail page
 {% block content %}
 <ul>
     <div id="messages"></div>
-    <h1>Tournament name: {{ tournament.name }}</h1>
-    <h4>Teams number: {{ tournament.teams_number }}</h4>
-    <h4>Players in team: {{ tournament.players_in_team }}</h4>
-    <img class ="mt-4 mb-4" width="128" height="128" src="{{ tournament.logo.url }}" alt="tournament logo here!">
-    <h1 class="mb-5">{{ tournament.name }}</h1>
-
-    <li><a class="btn btn-primary" href="{% url 'tournaments:bracket' tournament.pk %}">Edit</a></li>
-
+    <h1>Tournament</h1>
     <table class="table" style="width: 60%; box-shadow: 0 5px 15px rgb(0 0 0 / 0.3)">
         <tr>
             <th class="table-active" style="width: 10rem">Name</th>
@@ -23,6 +16,10 @@ Tournament detail page
         <tr>
             <th class="table-active" style="height: 16rem">Description</th>
             <td class="text-break">{{ tournament.description }}</td>
+        </tr>
+        <tr>
+            <th class="table-active">Logo</th>
+            <td><img class ="mt-4 mb-4" width="128" height="128" src="{{ tournament.logo.url }}" alt="tournament logo here!"></td>
         </tr>
         <tr>
             <th class="table-active">Owner</th>
@@ -40,6 +37,11 @@ Tournament detail page
             <th class="table-active">Approved by admin</th>
             <td>{{ tournament.approved_by_admin }}</td>
         </tr>
+        <tr>
+            <th class="table-active"></th>
+            <td>
+            </td>
+        </tr>
     </table>
 
     <h4>Teams:</h4>
@@ -56,13 +58,13 @@ Tournament detail page
       <p>No teams are available.</p>
     {% endif %}
 
-    <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:approve' tournament.pk %}">Approve tournament</a></li>
 
-
-    <li><a class="btn btn-primary mb-3" href="{% url 'teams:create' tournament.pk %}">Create a team</a></li>
     {% if tournament.owner.id == user.id %}
-    <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:delete' tournament.pk %}">Delete a tournament</a></li>
+    <li><a class="btn btn-success mb-3" href="{% url 'tournaments:approve' tournament.pk %}">Approve tournament</a></li>
+    <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:bracket' tournament.pk %}">Edit a tournament</a></li>
+    <li><a class="btn btn-danger mb-3" href="{% url 'tournaments:delete' tournament.pk %}">Delete a tournament</a></li>
     {% endif %} 
+    <li><a class="btn btn-primary mb-3" href="{% url 'teams:create' tournament.pk %}">Create a team</a></li>
 
     <h4>Rounds:</h4>
         
@@ -73,11 +75,12 @@ Tournament detail page
       {% for round in round_list %}
         <li>{{ round.number }}</li>
             <ul>
-                <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:generate_matches' round.pk %}">Generate matches</a></li>
 
                 {% for match in round.match_set.all %}
                 <li>{{ match }} {{ match.blue_score }}:{{ match.red_score }}</li>
                 {% endfor %}
+                <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:generate_matches' round.pk %}">Create/Edit a match</a></li>
+
             </ul>
 
       {% endfor %}
