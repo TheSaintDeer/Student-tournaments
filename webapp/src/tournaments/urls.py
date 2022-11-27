@@ -14,5 +14,9 @@ urlpatterns = [
     path('create/', TournamentsCreateView.as_view(), name='create'),
     path('detail/<pk>/delete/', TournamentsDeleteView.as_view(), name='delete'),
     path('leaderdoard/', views.leaderdoard, name='leaderdoard'),
+    path('approve/<int:tournament_id>', views.approve, name='approve'),
+    path('generate_matches/<int:round_id>', views.generate_matches, name='generate_matches'),
+    path('create_round/<int:tournament_id>', views.create_round, name='create_round'),
 
+# generate_matches
 ]
