@@ -6,10 +6,14 @@ Tournament detail page
 
 {% block content %}
 <ul>
+    <div id="messages"></div>
+    <h1>Tournament name: {{ tournament.name }}</h1>
+    <h4>Teams number: {{ tournament.teams_number }}</h4>
+    <h4>Players in team: {{ tournament.players_in_team }}</h4>
     <img class ="mt-4 mb-4" width="128" height="128" src="{{ tournament.logo.url }}" alt="tournament logo here!">
     <h1 class="mb-5">{{ tournament.name }}</h1>
 
-    <a class="btn btn-primary mb-3 btn-lg" style="width: 8em" href="{% url 'tournaments:bracket' tournament.pk %}">Edit</a>
+    <li><a class="btn btn-primary" href="{% url 'tournaments:bracket' tournament.pk %}">Edit</a></li>
 
     <table class="table" style="width: 60%; box-shadow: 0 5px 15px rgb(0 0 0 / 0.3)">
         <tr>
@@ -25,12 +29,16 @@ Tournament detail page
             <td>{{ tournament.owner }}</td>
         </tr>
         <tr>
-            <th class="table-active">Number of players</th>
+            <th class="table-active">Number of teams</th>
             <td>{{ tournament.teams_number }}</td>
         </tr>
         <tr>
-            <th class="table-active">Reward</th>
+            <th class="table-active">Players per team</th>
             <td>{{ tournament.players_in_team }}</td>
+        </tr>
+        <tr>
+            <th class="table-active">Approved by admin</th>
+            <td>{{ tournament.approved_by_admin }}</td>
         </tr>
     </table>
 
@@ -48,74 +56,36 @@ Tournament detail page
       <p>No teams are available.</p>
     {% endif %}
 
+    <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:approve' tournament.pk %}">Approve tournament</a></li>
+
+
     <li><a class="btn btn-primary mb-3" href="{% url 'teams:create' tournament.pk %}">Create a team</a></li>
     {% if tournament.owner.id == user.id %}
-    <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:delete' tournament.pk %}">Delete</a></li>
+    <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:delete' tournament.pk %}">Delete a tournament</a></li>
     {% endif %} 
 
     <h4>Rounds:</h4>
-
-    <li>
-        <form action="/tournaments/create_round/" method="POST">
-          {% csrf_token %}
-          <button id="create_round">Create a round</button>
-        </form>
+        
     
     </li>
     {% if round_list %}
       <ul>
       {% for round in round_list %}
         <li>{{ round.number }}</li>
+            <ul>
+                <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:generate_matches' round.pk %}">Generate matches</a></li>
+
+                {% for match in round.match_set.all %}
+                <li>{{ match }} {{ match.blue_score }}:{{ match.red_score }}</li>
+                {% endfor %}
+            </ul>
+
       {% endfor %}
       </ul>
     {% endif %} 
 
+    <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:create_round' tournament.pk %}">Create a round</a></li>
+
+
 </ul>
 {% endblock content %}
-
-{% block script %}
-<script> 
-
-$('#create_round').click(function(event){
-    event.preventDefault();
-    // console.log("Form submitted!")  // sanity check
-    update_profile("/tournaments/create_round/", "POST");
-});
-
-var alertList = document.querySelectorAll('.alert')
-alertList.forEach(function (alert) {
-new bootstrap.Alert(alert)
-})
-
-function update_profile(url, type) {
-
-    $.ajax({
-        url : url, // the endpoint
-        type : type, // http method
-        data : {
-          'tournament_id' : '{{ tournament.id }}',
-          csrfmiddlewaretoken: '{{ csrf_token }}',
-        }, 
-
-        // handle a successful response
-        success : function(json) {
-            console.log(json); // log the returned json to the console
-            $('#messages').html('<div class="alert alert-success alert-dismissible fade show" role="alert"> \
-                Changes saved! \
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
-            </div>');
-            console.log("Profile updated!") 
-
-        },
-        // handle a non-successful response
-        error : function(xhr,errmsg,err) {
-            $('#messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
-                Oops! We have encountered an error! \
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
-            </div>');
-            console.log(xhr.status + ": " + xhr.responseText);
-        }
-    });
-};
-</script>
-{% endblock script %}

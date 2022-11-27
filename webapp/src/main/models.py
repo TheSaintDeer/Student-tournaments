@@ -15,6 +15,7 @@ class Tournament(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     teams_number = models.IntegerField(default=2)
     players_in_team = models.IntegerField(default=1)
+    approved_by_admin = models.BooleanField(default=False)
     pass
 
     def __str__(self) -> str:
@@ -48,6 +49,7 @@ class Player(models.Model):
 class Round(models.Model):
     number = models.IntegerField(default=1)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    reward_points = models.IntegerField(default=10)
 
     def __str__(self) -> str:
         return f'Round: {self.number}'
@@ -55,8 +57,12 @@ class Round(models.Model):
     def save(self, *args, **kwargs):
     # This means that the model isn't saved to the database yet
         if self._state.adding:
-            # Get the maximum display_id value from the database
-            last_number = self.objects.all().aggregate(largest=models.Max('number'))['largest']
+
+            last_number = None
+            # Get the maximum number value from the database
+            round = Round.objects.filter(tournament = self.tournament)
+            if round.exists():
+                last_number = round.aggregate(largest=models.Max('number'))['largest']
 
             # aggregate can return None! Check it first.
             # If it isn't none, just use the last ID specified (which should be the greatest) and add one to it

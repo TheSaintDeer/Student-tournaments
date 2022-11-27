@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %} 
+
+{% load crispy_forms_tags %}     
+
+
+{% block title %}
+Create a round
+{% endblock title %}
+
+
+<div class="container py-5">
+<div class="mx-auto" style="width: 500px;">
+	<!-- <h1 class="text-center">C</h1> -->
+
+    {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %} 
+
+	<form method="POST">
+		{% csrf_token %}
+		{{ match_formset | crispy }}   
+        <div class="text-center mb-3">
+	    	<button class="btn btn-primary" type="submit">Submit</button>
+        </div>                 
+
+	</form>
+
+
+
+
+
+</div>
+</div>
+
+{% endblock %}

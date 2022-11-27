@@ -14,6 +14,8 @@ urlpatterns = [
     # path('bracket/<pk>', BracketView.as_view(), name='bracket'),
     path('create/', TournamentsCreateView.as_view(), name='create'),
     path('detail/<pk>/delete/', TournamentsDeleteView.as_view(), name='delete'),
-    path("create_round/", views.create_round, name="create_round"),
+    path("create_round/<int:tournament_id>", views.create_round, name="create_round"),
+    path("approve/<int:tournament_id>", views.approve, name="approve"),
+    path("generate_matches/<int:round_id>", views.generate_matches, name="generate_matches"),
 
 ]
