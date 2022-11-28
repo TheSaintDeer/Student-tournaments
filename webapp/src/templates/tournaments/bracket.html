@@ -27,6 +27,7 @@ Tournament bracket page
                 {% if not round.finished %}
                     {% ifchanged round.finished %}
                         <div class="col-sm-3 mt-3">
+                        <div class="container m-5 bg-success text-white mx-auto" style="width: 4rem; height: 4rem; line-height: 4rem; text-align: center; font-size: 2rem">{{ round.number }}</div>
                             {% for match in match_list %}
                                 {% if match.round == round %}
                                     <div class="card">
@@ -40,6 +41,7 @@ Tournament bracket page
                         </div>
                     {% else %}
                         <div class="col-sm-2 mt-3">
+                        <div class="container m-5 bg-success text-white mx-auto" style="width: 4rem; height: 4rem; line-height: 4rem; text-align: center; font-size: 2rem">{{ round.number }}</div>
                             {% for match in match_list %}
                                 {% if match.round == round %}
                                     <div class="card">
@@ -55,6 +57,7 @@ Tournament bracket page
 {#          FINISHED ROUND          #}
                 {% else %}
                     <div class="col-sm-2 mt-3">
+                        <div class="container m-5 bg-success text-white mx-auto" style="width: 4rem; height: 4rem; line-height: 4rem; text-align: center; font-size: 2rem">{{ round.number }}</div>
                     {% for match in match_list %}
                         {% if match.round == round %}
                             <div class="card">
