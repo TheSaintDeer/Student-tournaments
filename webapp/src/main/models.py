@@ -17,6 +17,7 @@ class Tournament(models.Model):
     players_in_team = models.IntegerField(default=1)
     approved_by_admin = models.BooleanField(default=False)
     bracket_exists = models.BooleanField(default=False)
+    finished = models.BooleanField(default=False)
     pass
 
     def __str__(self) -> str:

@@ -19,28 +19,30 @@ Leaderdoard page
   <div class="container">
 
     <div class="row">
-            <div class="col d-flex"></div>
-            <div class="col-1 d-flex flex-row justify-content-center align-items-center"><h4>Username</h4></div>
-            <div class="col d-flex flex-row justify-content-center align-items-center"><h4>Points</h4></div>
+            <div class="col-3 d-flex"></div>
+            <div class="col-3 d-flex flex-row justify-content-center align-items-center"><h4>Username</h4></div>
+            <div class="col d-flex flex-row justify-content-center align-items-center"><h4>Wins:</h4></div>
+            <div class="col d-flex flex-row justify-content-center align-items-center"><h4>Matches</h4></div>
+            <div class="col d-flex flex-row justify-content-center align-items-center"><h4>Tournaments</h4></div>
       {% if players %}
       <ul class="list-group">
 
       {% for player in players %}
         <a style="text-decoration:none" href="{% url 'main:user_detail' player.id %}">
         <div class="list-group-item list-group-item-action" >
-
-
-
-
             <div class="row">
-                <div class="col d-flex">
+                <div class="col-3 d-flex">
                     <div class="my-auto" style="background-image: url({{player.avatar.url}}); background-size: cover; background-position: center; padding: 8%; border-radius: 50%; width: 50px; height: 50px"></div>
                 </div>
-                <div class="col-1 d-flex flex-row justify-content-center align-items-center">
+                <div class="col-3 d-flex flex-row justify-content-center align-items-center">
                     <h4 class="my-auto align-items-center">{{player.user}}</h4>
                 </div>
+                <div class="col-2 d-flex flex-row justify-content-center align-items-center"></div>
                 <div class="col d-flex flex-row justify-content-center align-items-center">
-                    <span class="my-auto"><h4>{{player.points}}</h4></span>
+                    <span class="my-auto"><h4>{{player.wins_matches}}</h4></span>
+                </div>
+                <div class="col d-flex flex-row justify-content-center align-items-center">
+                    <span class="my-auto"><h4>{{player.wins_tournament}}</h4></span>
                 </div>
             </div>
         </div>

@@ -12,11 +12,9 @@ Tournament bracket page
     <div class="col-sm-2 mt-3">
         <button type="button" id ="create" class="btn btn-success btn-lg">Create Grid</button>
     </div>
-{#    <form action="" method="POST" id="finish">{% csrf_token %}#}
     <div class="col-sm-2 mt-3">
         <button type="submit" id="result" class="btn btn-success btn-lg">Finish round</button>
     </div>
-{#    </form>#}
 </div>
     {% if t_jinja.bracket_exists %}
         <script>document.getElementById("create").disabled = true</script>
@@ -26,7 +24,6 @@ Tournament bracket page
             {% if round.tournament == t_jinja %}
                 {% if round.finished %}
                     <div class="col-sm-2 mt-3">
-                        <div class="container m-5 bg-primary text-white mx-auto" style="width: 4rem; height: 4rem; line-height: 4rem; text-align: center; font-size: 2rem">{{ round.number }}</div>
                     {% for match in match_list %}
                         {% if match.round == round %}
                             <div class="card">
@@ -37,6 +34,7 @@ Tournament bracket page
                             </div>
                         {% endif %}
                     {% endfor %}
+                        <div class="container m-5 bg-primary text-white mx-auto" style="width: 4rem; height: 4rem; line-height: 4rem; text-align: center; font-size: 2rem">{{ round.number }}</div>
                     </div>
                 {% endif %}
             {% endif %}
@@ -47,7 +45,6 @@ Tournament bracket page
                 {% if not round.finished %}
                     {% ifchanged round.finished %}
                         <div class="col-sm-3 mt-3">
-                        <div class="container m-5 bg-primary text-white mx-auto" style="width: 4rem; height: 4rem; line-height: 4rem; text-align: center; font-size: 2rem">{{ round.number }}</div>
                             {% for match in match_list %}
                                 {% if match.round == round %}
                                     <div class="card">
@@ -58,10 +55,10 @@ Tournament bracket page
                                     </div>
                                 {% endif %}
                             {% endfor %}
+                        <div class="container m-5 bg-primary text-white mx-auto" style="width: 4rem; height: 4rem; line-height: 4rem; text-align: center; font-size: 2rem">{{ round.number }}</div>
                         </div>
                     {% else %}
                         <div class="col-sm-2 mt-3">
-                        <div class="container m-5 bg-primary text-white mx-auto" style="width: 4rem; height: 4rem; line-height: 4rem; text-align: center; font-size: 2rem">{{ round.number }}</div>
                             {% for match in match_list %}
                                 {% if match.round == round %}
                                     <div class="card">
@@ -72,6 +69,7 @@ Tournament bracket page
                                     </div>
                                 {% endif %}
                             {% endfor %}
+                        <div class="container m-5 bg-primary text-white mx-auto" style="width: 4rem; height: 4rem; line-height: 4rem; text-align: center; font-size: 2rem">{{ round.number }}</div>
                         </div>
                     {% endifchanged %}
                 {% endif %}

@@ -23,17 +23,20 @@ def tournaments(request):
     }
     return render(request, 'tournaments/tournaments.html', context)
 
-def bracket(request, tournament_id, winner=None):
+def bracket(request, tournament_id, winner=None, top_team=None):
     tournament = get_object_or_404(Tournament, pk=tournament_id)
     team_list = Team.objects.filter(tournament=tournament)
     rounds = Round.objects.all()
     matches = Match.objects.all()
     req_rounds = Round.objects.filter(tournament=tournament)
+    players = Player.objects.all()
+    tournament_finished = True
     aux = ''
     if is_ajax(request):
         aux = request.GET.get('result_button')
     if request.method == 'GET' and aux == 'pressed':
         print("Result button pressed")
+        # Check if all matches are correct when pressed result button
         for round in req_rounds:
             if not round.finished:
                 print("Round number:", round.number)
@@ -51,6 +54,7 @@ def bracket(request, tournament_id, winner=None):
                     match.save()
                 round.save()
                 break
+        # Picks winners of previous round's matches
         for round in req_rounds:
             if not round.finished:
                 prev_round = Round.objects.get(tournament=tournament, number=round.number-1)
@@ -72,10 +76,37 @@ def bracket(request, tournament_id, winner=None):
                                 curr_match.red = winner
                         j += 1
                     print(curr_match.blue, curr_match.red)
+                    for player in players:
+                        teams_of_player = player.teams.all()
+                        for team in teams_of_player:
+                            if team == curr_match.blue or team == curr_match.red:
+                                player.wins_matches += 1
+                                player.save()
                     curr_match.save()
                     k += 2
                 break
-
+        # If all rounds are finished give the winner statistic point
+        for round in req_rounds:
+            if not round.finished:
+                tournament_finished = False
+        if tournament_finished and not tournament.finished:
+            for round in req_rounds:
+                if len(req_rounds) == round.number:
+                    for match in matches:
+                        if match.round == round:
+                            if match.blue_score > match.red_score:
+                                top_team = match.blue
+                            else:
+                                top_team = match.red
+            for player in players:
+                teams_of_player = player.teams.all()
+                for team in teams_of_player:
+                    if team == top_team:
+                        player.wins_tournament += 1
+                        player.wins_matches += 1
+                        player.save()
+            tournament.finished = True
+            tournament.save()
         return http.JsonResponse({'result': 'success'})
 
     if request.method == 'GET' and is_ajax(request) and aux != 'pressed':
