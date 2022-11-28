@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="content-type" content="text/html; charset=iso-8859-2">
+        <title>Student tournaments</title>
+        <link rel="icon" href="images/favicon.ico" type="images/x-icon" />
+        <style type="text/css">
+            table { border-collapse: collapse; }
+            td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
+            dt { font-weight: bold; margin-top: 0.5em; }
+        </style>
+    </head>
+    <body>
+        <h1>Studentské turnaje</h1>
+        <dl>
+            <dt>Autoři</dt>
+            <dd>Ivan Golikov
+                <a href="mailto:xgolik00@stud.fit.vutbr.cz">xgolik00@stud.fit.vutbr.cz</a> -
+                Návrh a úprava databáze, vytváření modelů, instalace databáze a projektu na server
+            </dd>
+            <dd>Maksym Koval
+                <a href="mailto:xkoval20@stud.fit.vutbr.cz">xkoval20@stud.fit.vutbr.cz</a> - 
+                Návrh a úprava databáze, vytváření modelů, registrace uživatele, schválení turnaje
+            </dd>
+            <dd>Anvar Kilybayev
+                <a href="mailto:xkilyb00@stud.fit.vutbr.cz">xkilyb00@stud.fit.vutbr.cz</a> - 
+                Návrh a úprava databáze, vytváření turnajů a registrace účastníků
+            </dd>
+            <dt>URL aplikace</dt>
+            <dd><a href="https://team-project-iss.herokuapp.com/">https://team-project-iss.herokuapp.com/</a></dd>
+        </dl>
+        <h2>Uživatelé systému pro testování</h2>
+        <table>
+            <tbody><tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
+            <tr><td>admin</td><td>admin</td><td>Administrátor</td></tr>
+            <tr><td>user</td><td>user</td><td>Registrovaný uživatel</td></tr>
+            <tr><td>-</td><td>-</td><td>Neregistrovaný uživatel</td></tr>
+            </tbody></table>
+            <h3>Video</h3>
+            <iframe width="500" height="300" src="---" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <h2>Implementace</h2>
+        <p>Pro náš projekt jsme zvolili jazyk Python spolu s frameworkem Django, který využívá návrhový vzor <strong>MTV (model–template–view)</strong>. Podle tohoto systému jsme projekt rozdělili do tří částí:
+            <ul>
+                <li><strong>Model</strong> pomáhá při práci s databází. Je to vrstva pro přístup k datům, která zpracovává data.</li>
+                <li><strong>Template</strong> je prezentační vrstva, která kompletně zpracovává část uživatelského rozhraní</li>
+                <li><strong>View</strong> se používá k provádění obchodní logiky a interakci s modelem pro přenos dat a vykreslování šablony</li>
+            </ul>
+            Hlavní části našeho projektu:
+            <ul>
+                <li><strong>Webapp</strong> je složka vytvořená automaticky Django, která obsahuje hlavní nastavení projektu.</li>
+                <li><strong>Tournaments</strong> zodpovídá za seznam turnajů na hlavní stránce, vytváří stránku pro každý jednotlivý turnaj, umožňuje vytvořit týmy pro tento turnaj, grid, round a match, potvrdit turnaj administrátorovi.</li>
+                <li><strong>Teams</strong> umožňují vytvořit/odstranit tým, přidat uživatele do týmů a odebrat z něj.</li>
+                <li><strong>Templates</strong> obsahuje html soubory.</li>
+                <li><strong>Media</strong> obsahuje media soubory.</li>
+            </ul>
+        </p>
+        <h3>Databáze</h3>
+        <img src="images/database.svg" alt="Schéma databázy" caption="Schéma databázy">
+        <h2>Instalace</h2>
+        <ul>
+            <li>---</li>
+        </ul>
+        <h2>Známé problémy</h2>
+            <p>---</p>
+    </body>
+</html>
