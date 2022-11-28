@@ -59,35 +59,10 @@ Tournament detail page
     {% endif %}
 
 
-    {% if tournament.owner.id == user.id %}
     <li><a class="btn btn-success mb-3" href="{% url 'tournaments:approve' tournament.pk %}">Approve tournament</a></li>
     <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:bracket' tournament.pk %}">Edit a tournament</a></li>
     <li><a class="btn btn-danger mb-3" href="{% url 'tournaments:delete' tournament.pk %}">Delete a tournament</a></li>
-    {% endif %} 
     <li><a class="btn btn-primary mb-3" href="{% url 'teams:create' tournament.pk %}">Create a team</a></li>
-
-{#    <h4>Rounds:</h4>#}
-{#        #}
-{#    #}
-{#    </li>#}
-{#    {% if round_list %}#}
-{#      <ul>#}
-{#      {% for round in round_list %}#}
-{#        <li>{{ round.number }}</li>#}
-{#            <ul>#}
-{##}
-{#                {% for match in round.match_set.all %}#}
-{#                <li>{{ match }} {{ match.blue_score }}:{{ match.red_score }}</li>#}
-{#                {% endfor %}#}
-{#                <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:generate_matches' round.pk %}">Create/Edit a match</a></li>#}
-{##}
-{#            </ul>#}
-{##}
-{#      {% endfor %}#}
-{#      </ul>#}
-{#    {% endif %} #}
-{##}
-{#    <li><a class="btn btn-primary mb-3" href="{% url 'tournaments:create_round' tournament.pk %}">Create a round</a></li>#}
 
 
 </ul>

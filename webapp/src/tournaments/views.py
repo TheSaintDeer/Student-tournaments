@@ -128,56 +128,6 @@ def create_round(request, tournament_id):
     else:
         return render(request, 'tournaments/create_round.html', {'round_form': round_form})
 
-
-def generate_matches(request, round_id):
-    round = Round.objects.get(id = round_id)
-    tournament = round.tournament
-    teams_list = Team.objects.filter(tournament = tournament)
-    MatchForm = create_match_form(teams_list, round)
-    MatchFormSet = modelformset_factory(Match, form=MatchForm)
-
-    if request.method == "POST":
-        match_formset = MatchFormSet(request.POST)
-        if match_formset.is_valid():
-            match_formset.save()
-        else:
-            return render(request, 'tournaments/generate_matches.html', {'match_formset': match_formset})
-
-        return redirect("tournaments:detail", tournament_id=tournament.id)
-    else:
-        match_formset = MatchFormSet()
-        return render(request, 'tournaments/generate_matches.html', {'match_formset': match_formset})
-
-def check_form_data(request, matches_formset, teams_list):
-    teams_list = list(teams_list)
-
-    if matches_formset.cleaned_data:
-        data = matches_formset.cleaned_data
-    else:
-        messages.error(request, "Unsuccessful operation. Please, setup all team matches.")
-        return False
-
-    index = 0
-    for item in data:
-        if data[index]:
-
-            blue = data[index]['blue']
-            if blue in teams_list:
-                teams_list.remove(blue)
-
-            red = data[index]['red']
-            if red in teams_list:
-                teams_list.remove(red)
-            index += 1
-        else:
-            messages.error(request, "Unsuccessful operation. Please, setup all team matches.")
-            return False
-    if teams_list:
-        messages.error(request, "Unsuccessful operation. One of teams has two matches.")
-        return False
-
-    return True
-
 def approve(request, tournament_id):
 
     tournament = Tournament.objects.get(id = tournament_id)
@@ -272,7 +222,7 @@ class TournamentsDeleteView(LoginRequiredMixin, DeleteView):
 
     def form_valid(self, form):
         owner = Tournament.objects.get(pk=self.kwargs['pk']).owner
-        if owner == self.request.user:
+        if owner == self.request.user or self.request.user.is_superuser:
             success_url = self.get_success_url()
             self.object.delete()
             return http.HttpResponseRedirect(success_url)

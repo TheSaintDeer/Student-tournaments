@@ -72,7 +72,7 @@ def remove_player(request, team_id):
         form = PlayerForTeamForm(players_queryset, request.POST)
 
         # if request user if a team owner, than he can remove players from this team
-        if (team.owner.pk == request.user.id): 
+        if (team.owner.pk == request.user.id) or request.user.is_superuser: 
          
             if form.is_valid():
 
@@ -109,7 +109,10 @@ class TeamsCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         tournament_id = self.kwargs['pk']
         current_tournament = Tournament.objects.get(pk = tournament_id)
-    
+
+        if not current_tournament.approved_by_admin:
+            return http.HttpResponseForbidden('The tournament has not yet been approved by the administrator.')
+
         if Team.objects.filter(tournament = current_tournament).count() < current_tournament.teams_number:
 
             # TODO check if owner exist in other teams of this tour
@@ -125,7 +128,7 @@ class TeamsCreateView(LoginRequiredMixin, CreateView):
             return super().form_valid(form)
             
         else:
-            return http.HttpResponseForbidden('too much teams!')
+            return http.HttpResponseForbidden('Team limit exceeded.')
 
     def get_success_url(self):
             return reverse("tournaments:detail", kwargs={'tournament_id': self.kwargs['pk']})
@@ -138,7 +141,7 @@ class TeamsDeleteView(LoginRequiredMixin, DeleteView):
 
     def form_valid(self, form):
         owner = Team.objects.get(pk = self.kwargs['pk']).owner
-        if owner == self.request.user:
+        if owner == self.request.user or self.request.user.is_superuser:
             success_url = self.get_success_url()
             self.object.delete()
             return http.HttpResponseRedirect(self.success_url)
