@@ -5,7 +5,17 @@ Main page
 {% endblock title %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1>Main</h1>
-</div>
+<div class="container py-5">
+    <section class="py-4 text-center container">
+        <div class="row py-lg-5">
+          <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Welcome to our tournament app!</h1>
+            <a class="btn btn-primary m-4" href="{% url 'tournaments:tournaments' %}">Tournaments list</a>
+            <a class="btn btn-primary m-4" href="{% url 'tournaments:create' %}">Create new</a>
+            <a class="btn btn-primary m-4" href="{% url 'tournaments:leaderboard' %}">Players leaderboard</a>
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
 {% endblock content %}

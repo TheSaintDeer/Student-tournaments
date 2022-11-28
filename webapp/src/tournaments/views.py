@@ -267,7 +267,7 @@ def edit(request, match_id):
             content_type="application/json")
     return render(request, 'tournaments/edit.html', {'match': match, 'team_list': team_list})
 
-def leaderdoard(request):
+def leaderboard(request):
     players = Player.objects.all()
     return render(request, 'tournaments/leaderboard.html', {'players': players})
 
