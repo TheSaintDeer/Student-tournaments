@@ -36,6 +36,9 @@ def bracket(request, tournament_id, winner=None, top_team=None):
         aux = request.GET.get('result_button')
     if request.method == 'GET' and aux == 'pressed':
         print("Result button pressed")
+        owner = tournament.owner
+        if owner != request.user and not request.user.is_superuser:
+            return http.JsonResponse({'result': 'forbidden'})
         # Check if all matches are correct when pressed result button
         for round in req_rounds:
             if not round.finished:
@@ -110,6 +113,9 @@ def bracket(request, tournament_id, winner=None, top_team=None):
         return http.JsonResponse({'result': 'success'})
 
     if request.method == 'GET' and is_ajax(request) and aux != 'pressed':
+        owner = tournament.owner
+        if owner != request.user and not request.user.is_superuser:
+            return http.JsonResponse({'result': 'forbidden'})
         matches_list = []
         data_from_ajax = json.loads(request.GET.get('bracket_data'))
         tournament.bracket_exists = True
@@ -183,8 +189,20 @@ def approve(request, tournament_id):
 
 
 def edit(request, match_id):
+    # owner = Tournament.objects.get(pk=self.kwargs['pk']).owner
+    # if owner == self.request.user or self.request.user.is_superuser:
+    #     success_url = self.get_success_url()
+    #     self.object.delete()
+    #     return http.HttpResponseRedirect(success_url)
+    # else:
+    #     return http.HttpResponseForbidden('no permissions!')
+
     match = get_object_or_404(Match, pk=match_id)
     team_list = Team.objects.filter(tournament=match.round.tournament)
+    owner = match.round.tournament.owner
+    if owner != request.user and not request.user.is_superuser:
+        return http.HttpResponseForbidden('permission denied!')
+
     if all(team.selected is True for team in team_list):
         for team in team_list:
             if match.blue == team or match.red == team:

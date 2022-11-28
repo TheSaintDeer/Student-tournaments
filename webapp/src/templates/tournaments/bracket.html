@@ -104,6 +104,13 @@ Tournament bracket page
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
                 </div>');
                 }
+                else if(response.result === "forbidden"){
+                    location.reload();
+                $('#messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                No permission. Denied! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+                </div>');
+                }
                 else if(response.result === "error_none"){
                 $('#messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
                 Need to fill matches! \
@@ -131,6 +138,13 @@ Tournament bracket page
                     success: function (response){
                         $("#create").attr("disabled", true);
                         appendGrid(created_bracket, response.matches);
+                    if(response.result === "forbidden"){
+                        location.reload();
+                        $('#messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                        No permission. Denied! \
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+                        </div>');
+                    }
                     }
                 })
             }
