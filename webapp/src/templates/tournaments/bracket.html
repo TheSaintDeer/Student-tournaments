@@ -26,7 +26,7 @@ Tournament bracket page
 {#          NOT FINISHED ROUND                               #}
                 {% if not round.finished %}
                     {% ifchanged round.finished %}
-                        <div class="col-sm-2 mt-3">
+                        <div class="col-sm-3 mt-3">
                             {% for match in match_list %}
                                 {% if match.round == round %}
                                     <div class="card">

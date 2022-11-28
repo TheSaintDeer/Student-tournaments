@@ -58,22 +58,22 @@ class Round(models.Model):
     def __str__(self) -> str:
         return f'Round: {self.number}'
 
-    def save(self, *args, **kwargs):
-    # This means that the model isn't saved to the database yet
-        if self._state.adding:
-
-            last_number = None
-            # Get the maximum number value from the database
-            round = Round.objects.filter(tournament = self.tournament)
-            if round.exists():
-                last_number = round.aggregate(largest=models.Max('number'))['largest']
-
-            # aggregate can return None! Check it first.
-            # If it isn't none, just use the last ID specified (which should be the greatest) and add one to it
-            if last_number is not None:
-                self.number = last_number + 1
-
-        super(Round, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    # # This means that the model isn't saved to the database yet
+    #     if self._state.adding:
+    #
+    #         last_number = None
+    #         # Get the maximum number value from the database
+    #         round = Round.objects.filter(tournament = self.tournament)
+    #         if round.exists():
+    #             last_number = round.aggregate(largest=models.Max('number'))['largest']
+    #
+    #         # aggregate can return None! Check it first.
+    #         # If it isn't none, just use the last ID specified (which should be the greatest) and add one to it
+    #         if last_number is not None:
+    #             self.number = last_number + 1
+    #
+    #     super(Round, self).save(*args, **kwargs)
 
 
 class Match(models.Model):

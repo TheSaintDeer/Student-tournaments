@@ -17,7 +17,7 @@ from django.contrib import messages
 # Create your views here.
 
 def tournaments(request):
-    tournament_list = Tournament.objects.all()
+    tournament_list = reversed(Tournament.objects.all())
     context = {
         'tournament_list': tournament_list,
     }
@@ -199,6 +199,7 @@ def approve(request, tournament_id):
         return render(request, 'tournaments/approve_tournament.html', {'approve_form': approve_form})
 
     pass
+
 
 def edit(request, match_id):
     match = get_object_or_404(Match, pk=match_id)
