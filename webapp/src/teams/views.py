@@ -14,21 +14,37 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 def detail(request, team_id):
-    current_team = get_object_or_404(Team, pk=team_id)
+    current_team_q = Team.objects.filter(id=team_id)
+    if not current_team_q.exists():
+        return redirect("tournaments:tournaments")
+    current_team = current_team_q.first()
+
     players_list = Player.objects.filter(teams__id = team_id)
     return render(request, 'teams/detail.html', {'team': current_team, 'players_list': players_list})
 
 @login_required
 def add_player(request, team_id):
 
-    team = Team.objects.get(id = team_id)
+    team_q = Team.objects.filter(id = team_id)
+    if not team_q.exists():
+        return redirect("tournaments:tournaments")
+    team = team_q.first()
+
     players_queryset = Player.objects.exclude(teams__id = team_id)
 
     if request.method == 'POST':
         
         form = PlayerForTeamForm(players_queryset, request.POST)
-        tournament = Tournament.objects.get(id = team.tournament.id)
-        player_to_add = Player.objects.get(id = request.POST['player'])
+        tournament_q = Tournament.objects.filter(id = team.tournament.id)
+        if not tournament_q.exists():
+            return redirect("tournaments:tournaments")
+        tournament = tournament_q.first()
+        
+        player_to_add_q = Player.objects.filter(id = request.POST['player'])
+        if not player_to_add_q.exists():
+            return redirect("tournaments:tournaments")
+        player_to_add = player_to_add_q.first()
+
         amount_of_players = Player.objects.filter(teams__id = team.id).count()
 
         # if request user if a team owner, than he can add players to this team
@@ -64,7 +80,11 @@ def add_player(request, team_id):
 
 def remove_player(request, team_id):
 
-    team = Team.objects.get(id = team_id)
+    team_q = Team.objects.filter(id = team_id)
+    if not team_q.exists():
+        return redirect("tournaments:tournaments")
+    team = team_q.first()
+
     players_queryset = team.player_set.all()
 
     if request.method == 'POST':
@@ -76,7 +96,10 @@ def remove_player(request, team_id):
          
             if form.is_valid():
 
-                player_to_remove = Player.objects.get(id = request.POST['player'])
+                player_to_remove_q = Player.objects.filter(id = request.POST['player'])
+                if not player_to_remove_q.exists():
+                    return redirect("tournaments:tournaments")
+                player_to_remove = player_to_remove_q.first()
 
                 if request.user == player_to_remove.user:
                     messages.warning(request, "You cant remove team owner.")
@@ -108,7 +131,10 @@ class TeamsCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         tournament_id = self.kwargs['pk']
-        current_tournament = Tournament.objects.get(pk = tournament_id)
+        current_tournament_q = Tournament.objects.filter(pk = tournament_id)
+        if not current_tournament_q.exists():
+            return redirect("tournaments:tournaments")
+        current_tournament = current_tournament_q.first()
 
         if not current_tournament.approved_by_admin:
             return http.HttpResponseForbidden('The tournament has not yet been approved by the administrator.')
@@ -116,8 +142,11 @@ class TeamsCreateView(LoginRequiredMixin, CreateView):
         if Team.objects.filter(tournament = current_tournament).count() < current_tournament.teams_number:
 
             # TODO check if owner exist in other teams of this tour
-            player = Player.objects.get(user = self.request.user)
-            
+            player_q = Player.objects.filter(user = self.request.user)
+            if not player_q.exists():
+                return redirect("tournaments:tournaments")
+            player = player_q.first()
+
             if (Player.objects.filter(teams__tournament = current_tournament).contains(player)):
                 return http.HttpResponseForbidden('Player already has a team.')
 
@@ -141,7 +170,12 @@ class TeamsDeleteView(LoginRequiredMixin, DeleteView):
     success_url = '/tournaments'
 
     def form_valid(self, form):
-        owner = Team.objects.get(pk = self.kwargs['pk']).owner
+        team_q = Team.objects.filter(pk = self.kwargs['pk'])
+        if not team_q.exists():
+            return redirect("tournaments:tournaments")
+        team = team_q.first()
+
+        owner = team.owner
         if owner == self.request.user or self.request.user.is_superuser:
             success_url = self.get_success_url()
             self.object.delete()

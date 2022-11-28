@@ -24,7 +24,11 @@ def tournaments(request):
     return render(request, 'tournaments/tournaments.html', context)
 
 def bracket(request, tournament_id, winner=None, top_team=None):
-    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    tournament_q = Tournament.objects.filter(id=tournament_id)
+    if not tournament_q.exists():
+        return redirect("tournaments:tournaments")
+    tournament = tournament_q.first()
+
     team_list = Team.objects.filter(tournament=tournament)
     rounds = Round.objects.all()
     matches = Match.objects.all()
@@ -60,7 +64,11 @@ def bracket(request, tournament_id, winner=None, top_team=None):
         # Picks winners of previous round's matches
         for round in req_rounds:
             if not round.finished:
-                prev_round = Round.objects.get(tournament=tournament, number=round.number-1)
+                prev_round_q = Round.objects.filter(tournament=tournament, number=round.number-1)
+                if not prev_round_q.exists():
+                    return redirect("tournaments:tournaments")
+                prev_round = prev_round_q.first()
+
                 print(prev_round.number)
                 curr_matches = Match.objects.filter(round=round)
                 prev_matches = Match.objects.filter(round=prev_round)
@@ -140,7 +148,11 @@ def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 def detail(request, tournament_id):
-    tournament = get_object_or_404(Tournament, pk=tournament_id)
+    tournament_q = Tournament.objects.filter(id=tournament_id)
+    if not tournament_q.exists():
+        return redirect("tournaments:tournaments")
+    tournament = tournament_q.first()
+
     team_list = Team.objects.filter(tournament=tournament)
     round_list = Round.objects.filter(tournament=tournament)
 
@@ -151,7 +163,11 @@ def detail(request, tournament_id):
 @login_required
 def create_round(request, tournament_id):
 
-    tournament = Tournament.objects.get(id = tournament_id)
+    tournament_q = Tournament.objects.filter(id=tournament_id)
+    if not tournament_q.exists():
+        return redirect("tournaments:tournaments")
+    tournament = tournament_q.first()
+    
     round_form = CreateRoundForm(tournament=tournament)
     if request.method == "POST":
         round_form = CreateRoundForm(data = request.POST, tournament=tournament)
@@ -167,8 +183,10 @@ def create_round(request, tournament_id):
 
 def approve(request, tournament_id):
 
-    tournament = Tournament.objects.get(id = tournament_id)
-
+    tournament_q = Tournament.objects.filter(id = tournament_id)
+    if not tournament_q.exists():
+        return redirect("tournaments:tournaments")
+    tournament = tournament_q.first()
 
     if request.method == "POST":
 
@@ -189,15 +207,11 @@ def approve(request, tournament_id):
 
 
 def edit(request, match_id):
-    # owner = Tournament.objects.get(pk=self.kwargs['pk']).owner
-    # if owner == self.request.user or self.request.user.is_superuser:
-    #     success_url = self.get_success_url()
-    #     self.object.delete()
-    #     return http.HttpResponseRedirect(success_url)
-    # else:
-    #     return http.HttpResponseForbidden('no permissions!')
+    match_q = Match.objects.filter(pk=match_id)
+    if not match_q.exists():
+        return redirect("tournaments:tournaments")
+    match = match_q.first()
 
-    match = get_object_or_404(Match, pk=match_id)
     team_list = Team.objects.filter(tournament=match.round.tournament)
     owner = match.round.tournament.owner
     if owner != request.user and not request.user.is_superuser:
@@ -232,9 +246,13 @@ def edit(request, match_id):
                 match.red.selected = False
                 match.blue.save()
                 match.red.save()
-            # player = Player.objects.get(id=request.user.id)
-            blue = Team.objects.get(name=blue_team, tournament=match.round.tournament)
-            red = Team.objects.get(name=red_team, tournament=match.round.tournament)
+            blue_q = Team.objects.filter(name=blue_team, tournament=match.round.tournament)
+            red_q = Team.objects.filter(name=red_team, tournament=match.round.tournament)
+            if not blue_q.exists() or not red_q.exists():
+                return redirect("tournaments:tournaments")
+            blue = blue_q.first()
+            red = red_q.first()
+
             blue.selected = True
             red.selected = True
             blue.save()
@@ -270,7 +288,13 @@ class TournamentsDeleteView(LoginRequiredMixin, DeleteView):
     success_url = '/tournaments'
 
     def form_valid(self, form):
-        owner = Tournament.objects.get(pk=self.kwargs['pk']).owner
+
+        tournament_q = Tournament.objects.filter(pk=self.kwargs['pk'])
+        if not tournament_q.exists():
+                return redirect("tournaments:tournaments")
+        tournament = tournament_q.first()
+
+        owner = tournament.owner
         if owner == self.request.user or self.request.user.is_superuser:
             success_url = self.get_success_url()
             self.object.delete()

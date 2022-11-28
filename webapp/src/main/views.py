@@ -19,28 +19,31 @@ def index(request):
 
 
 def user_detail(request, user_id):
-    user = User.objects.get(id = user_id)
-    player = Player.objects.get(user = user)
+    user_q = User.objects.filter(id = user_id)
+
+    if not user_q.exists():
+        return redirect("tournaments:tournaments")
+    user = user_q.first()
+
+    player_q = Player.objects.filter(user = user)
+    if not player_q.exists():
+        return redirect("tournaments:tournaments")
+    player = player_q.first()
+
     return render(request, 'main/user_detail.html', {'user': user, 'player': player})
 
 
 @login_required
 def profile(request):
-    player = Player.objects.get(user = request.user)
-    
+    player_q = Player.objects.filter(user = request.user)
+
+    if not player_q.exists():
+        return redirect("tournaments:tournaments")
+    player = player_q.first()
+
     team_list = player.teams.all()
 
     if request.method == 'POST':
-        # user_form = UpdateUserForm(request.POST, instance=request.user)
-        # profile_form = UpdatePlayerForm(request.POST, request.FILES, instance=player)
-        # post_form = PostForm()
-
-        # # if user_form.is_valid() and profile_form.is_valid():
-        # if user_form.is_valid():
-        #     user_form.save()
-        #     profile_form.save()
-        #     # profile_form.save()
-        #     messages.success(request, 'Your profile is updated successfully')
             return redirect("main:profile")
     else:
         user_form = UpdateUserForm(instance=request.user)
@@ -56,7 +59,11 @@ def profile(request):
 @csrf_protect
 def update_profile(request):
     if request.method == 'POST':
-        player = Player.objects.get(user=request.user)
+        player_q = Player.objects.filter(user=request.user)
+        if not player_q.exists():
+            return redirect("tournaments:tournaments")
+        player = player_q.first()
+
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdatePlayerForm(request.POST, request.FILES, instance=player)
         print(request.POST)
