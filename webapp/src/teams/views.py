@@ -116,7 +116,8 @@ class TeamsCreateView(LoginRequiredMixin, CreateView):
         if Team.objects.filter(tournament = current_tournament).count() < current_tournament.teams_number:
 
             # TODO check if owner exist in other teams of this tour
-            player = Player.objects.get(pk = self.request.user.pk)
+            player = Player.objects.get(user = self.request.user)
+            
             if (Player.objects.filter(teams__tournament = current_tournament).contains(player)):
                 return http.HttpResponseForbidden('Player already has a team.')
 

@@ -26,7 +26,8 @@ def user_detail(request, user_id):
 
 @login_required
 def profile(request):
-    player = Player.objects.get(user=request.user)
+    player = Player.objects.get(user = request.user)
+    
     team_list = player.teams.all()
 
     if request.method == 'POST':
@@ -55,7 +56,7 @@ def profile(request):
 @csrf_protect
 def update_profile(request):
     if request.method == 'POST':
-        player = Player.objects.get(id=request.user.id)
+        player = Player.objects.get(user=request.user)
         user_form = UpdateUserForm(request.POST, instance=request.user)
         profile_form = UpdatePlayerForm(request.POST, request.FILES, instance=player)
         print(request.POST)
