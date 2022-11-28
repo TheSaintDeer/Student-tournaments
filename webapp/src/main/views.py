@@ -26,7 +26,7 @@ def user_detail(request, user_id):
 
 @login_required
 def profile(request):
-    player = Player.objects.get(id=request.user.id)
+    player = Player.objects.get(user=request.user)
     team_list = player.teams.all()
 
     if request.method == 'POST':
