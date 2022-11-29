@@ -28,7 +28,7 @@ Leaderdoard page
       <ul class="list-group">
 
       {% for player in players %}
-        <a style="text-decoration:none" href="{% url 'main:user_detail' player.id %}">
+        <a style="text-decoration:none" href="{% url 'main:user_detail' user.id %}">
         <div class="list-group-item list-group-item-action" >
             <div class="row">
                 <div class="col-3 d-flex">
