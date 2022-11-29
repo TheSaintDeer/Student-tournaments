@@ -1,10 +1,11 @@
+import datetime
 from email.policy import default
 from pickletools import optimize
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.urls import reverse
-
+from django.utils.timezone import datetime
 
 # Create your models here
 
@@ -18,6 +19,7 @@ class Tournament(models.Model):
     approved_by_admin = models.BooleanField(default=False)
     bracket_exists = models.BooleanField(default=False)
     finished = models.BooleanField(default=False)
+    date_of_start = models.DateTimeField(default=datetime.now())
     pass
 
     def __str__(self) -> str:

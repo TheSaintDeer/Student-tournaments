@@ -28,8 +28,9 @@ Tournaments page
           <div class="card shadow-sm">
             <div class="card-body">
                 <img width="128" height="128" src="{{ tournament.logo.url }}" alt="tournament logo here!">
-                <p class="card-text">{{ tournament.name }}</p>
-                <p class="card-text">{{ tournament.owner }}</p>
+                <p class="card-text">Name: {{ tournament.name }}</p>
+                <p class="card-text">Date: {{ tournament.date_of_start }}</p>
+
 {#              <div class="d-flex justify-content-between align-items-center">#}
 {#                  <small class="text-muted">date</small>#}
 {#              </div>#}

@@ -274,7 +274,7 @@ def leaderboard(request):
 class TournamentsCreateView(LoginRequiredMixin, CreateView):
     model = Tournament
     template_name = 'tournaments/tournament_create_form.html'
-    fields = ['name', 'description', 'logo', 'teams_number', 'players_in_team']
+    fields = ['name', 'description', 'logo', 'teams_number', 'players_in_team', 'date_of_start']
     success_url = '/tournaments'
 
     def form_valid(self, form):
