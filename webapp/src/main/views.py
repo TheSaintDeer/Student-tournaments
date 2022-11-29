@@ -23,14 +23,14 @@ def user_detail(request, user_id):
 
     if not user_q.exists():
         return redirect("tournaments:tournaments")
-    user = user_q.first()
+    current_user = user_q.first()
 
-    player_q = Player.objects.filter(user = user)
+    player_q = Player.objects.filter(user = current_user)
     if not player_q.exists():
         return redirect("tournaments:tournaments")
     player = player_q.first()
 
-    return render(request, 'main/user_detail.html', {'user': user, 'player': player})
+    return render(request, 'main/user_detail.html', {'current_user': current_user, 'player': player})
 
 
 @login_required
