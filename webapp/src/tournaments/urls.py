@@ -1,7 +1,6 @@
 from django.urls import path, include
 from . import views
 from tournaments.views import TournamentsCreateView, TournamentsDeleteView
-# from tournaments.views import BracketView
 
 app_name = 'tournaments'
 

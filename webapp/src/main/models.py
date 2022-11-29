@@ -28,7 +28,6 @@ class Tournament(models.Model):
     def get_absolute_url(self):  # new
         return reverse('detail', args=[str(self.id)])
 
-
 class Team(models.Model):
     name = models.TextField(max_length=100, help_text='Enter team name')
     logo = models.ImageField(default='default_logos/team_default.png', upload_to='team_logo')
@@ -53,7 +52,6 @@ class Player(models.Model):
     def __str__(self) -> str:
         return self.user.username
 
-
 class Round(models.Model):
     number = models.IntegerField(default=1)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
@@ -62,24 +60,6 @@ class Round(models.Model):
 
     def __str__(self) -> str:
         return f'Round: {self.number}'
-
-    # def save(self, *args, **kwargs):
-    # # This means that the model isn't saved to the database yet
-    #     if self._state.adding:
-    #
-    #         last_number = None
-    #         # Get the maximum number value from the database
-    #         round = Round.objects.filter(tournament = self.tournament)
-    #         if round.exists():
-    #             last_number = round.aggregate(largest=models.Max('number'))['largest']
-    #
-    #         # aggregate can return None! Check it first.
-    #         # If it isn't none, just use the last ID specified (which should be the greatest) and add one to it
-    #         if last_number is not None:
-    #             self.number = last_number + 1
-    #
-    #     super(Round, self).save(*args, **kwargs)
-
 
 class Match(models.Model):
     blue = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='blue', null=True, blank=True)

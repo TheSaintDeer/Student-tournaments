@@ -230,9 +230,6 @@ def edit(request, match_id):
         blue_score = request.POST['blue_score']
         red_score = request.POST['red_score']
         print(blue_team, red_team)
-        # if blue_team == red_team:
-        #     print("Same team selected")
-        #     response_data['result'] = 'error_same'
         if blue_team is None or red_team is None:
             print("One of the team is none")
             response_data['result'] = 'error_none'

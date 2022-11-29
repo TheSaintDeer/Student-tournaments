@@ -171,17 +171,12 @@ class Match{
             var rounds = [];
             var matches_for_round_amnt;
             var aux = Math.pow(2, round_cnt); // rc = 4, aux = 16 || rc = 3, aux = 8 || rc = 2, aux = 4
-            // 12 / 2 = 6
-            // 3 / 2 = 2
-            // 5 / 2 = 3
-            // 7 / 2 = 4
 
             if(round_cnt === 1){
                 var empty_matches = Bracket.generateEmptyMatches(1);
                 rounds.push(empty_matches);
             }else{
                 for(var i = 0; i < round_cnt; i++){
-                    // matches_for_round_amnt = Math.pow(2, round_cnt - (1 + i));
                     amnt_of_teams = Math.ceil(amnt_of_teams / 2);
                     matches_for_round_amnt = amnt_of_teams;
 
