@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 
+# from ...
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,7 +28,7 @@ LOGIN_REDIRECT_URL = '/'
 SECRET_KEY = 'django-insecure-*l-691jh9!&c&g&qls0f@1wx3y9&c(p&y^(_%o5+f%4d_r=1sz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 DEBUG_PROPAGATE_EXCEPTIONS = True
@@ -45,7 +47,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
 
     'main',
-    'api',
+
     'tournaments',
     'teams',
 ]
@@ -98,6 +100,10 @@ DATABASES = {
         'HOST': 'ella.db.elephantsql.com',
         'PORT': '',
     }
+    #    'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    #}
 }
 
 
