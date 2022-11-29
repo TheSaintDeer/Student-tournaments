@@ -13,8 +13,8 @@ Team detail page
     
     {% if players_list %}
     {% for player in players_list %}
-      <img width="128" height="128" src="{{ player.avatar }}" alt="Player avatar">
-      <li><a href="">{{ player.user.username }}</a></li>
+      <img width="128" height="128" src="{{ player.avatar.url }}" alt="Player avatar">
+      <li><a href="{% url 'main:user_detail' player.user.id %}">{{ player.user.username }}</a></li>
     {% endfor %}
     </ul>
     {% else %}
