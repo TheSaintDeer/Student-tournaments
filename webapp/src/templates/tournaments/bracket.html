@@ -1,8 +1,15 @@
+<!-- Autoři:
+    Anvar Kilybayev (xkilyb00)
+    Ivan Golikov (xgolik00)
+-->
 {% extends 'base.html' %}
 
 {% block title %}
 Tournament bracket page
 {% endblock title %}
+{#  block content
+    xkilyb00 a xgolik00
+#}
 {% block content %}
 <ul>
 <div class="mt-3" id="messages">
@@ -87,6 +94,7 @@ Tournament bracket page
 {% block script %}
     <script>
     // Main function
+    // xkilyb00
     $(document).ready(function (){
        $('#result').click(function (){
            $.ajax({
@@ -125,6 +133,8 @@ Tournament bracket page
                }
            })
        });
+       // Creates spider grid for tournament
+       // xkilyb00 a xgolik00
        $("#create").click(function (){
            var bracket_exists = JSON.parse('{{ tournament|escapejs }}')[0].fields.bracket_exists;
            if(bracket_exists === false){
@@ -150,6 +160,7 @@ Tournament bracket page
             }
        });
     });
+    // xkilyb00
     function createGrid(){
         var list = JSON.parse('{{ team_list|escapejs }}');
         var team_list = [];
@@ -158,6 +169,7 @@ Tournament bracket page
          }
         return new Bracket(team_list);
     }
+    // xgolik00
     function appendGrid(bracket, match_list){
         for(var k = 0; k < bracket.rounds_list.length; k++){
             $('#main').append('<div class="col-sm-2 mt-3">' +

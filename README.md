@@ -1,2 +1,17 @@
 # Student-tournaments
-Project on the subject of IIS
+Pro spuštění projektu musíte mít nainstalovaný Python od verze 3.8.10
+
+Příkaz k instalaci Django
+```
+$ python -m pip install Django
+```
+
+Instalace požadovaných knihoven
+```
+$pip install -r /path/to/requirements.txt
+```
+
+Zahájení projektu
+```
+$python webapp/src/manage.py runserver
+```
