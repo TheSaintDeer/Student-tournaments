@@ -16,6 +16,7 @@ from django.forms import formset_factory, modelformset_factory
 from django.contrib import messages
 # Create your views here.
 
+# Max Koval (xkoval20)
 def tournaments(request):
     tournament_list = reversed(Tournament.objects.all())
     context = {
@@ -23,6 +24,7 @@ def tournaments(request):
     }
     return render(request, 'tournaments/tournaments.html', context)
 
+# Anvar Kilybayev (xkilyb00)
 def bracket(request, tournament_id, winner=None, top_team=None):
     tournament_q = Tournament.objects.filter(id=tournament_id)
     if not tournament_q.exists():
@@ -147,6 +149,7 @@ def bracket(request, tournament_id, winner=None, top_team=None):
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
+# Max Koval (xkoval20)
 def detail(request, tournament_id):
     tournament_q = Tournament.objects.filter(id=tournament_id)
     if not tournament_q.exists():
@@ -160,6 +163,7 @@ def detail(request, tournament_id):
     return render(request, 'tournaments/detail.html', {'tournament': tournament, 'team_list': team_list, 'round_list': round_list})
 
 
+# Max Koval (xkoval20)
 @login_required
 def create_round(request, tournament_id):
 
@@ -181,6 +185,7 @@ def create_round(request, tournament_id):
     else:
         return render(request, 'tournaments/create_round.html', {'round_form': round_form})
 
+# Max Koval (xkoval20)
 def approve(request, tournament_id):
 
     tournament_q = Tournament.objects.filter(id = tournament_id)
@@ -205,7 +210,7 @@ def approve(request, tournament_id):
 
     pass
 
-
+# Anvar Kilybayev (xkilyb00)
 def edit(request, match_id):
     match_q = Match.objects.filter(pk=match_id)
     if not match_q.exists():
@@ -264,10 +269,12 @@ def edit(request, match_id):
             content_type="application/json")
     return render(request, 'tournaments/edit.html', {'match': match, 'team_list': team_list})
 
+# Max Koval (xkoval20)
 def leaderboard(request):
     players = Player.objects.all()
     return render(request, 'tournaments/leaderboard.html', {'players': players})
 
+# Max Koval (xkoval20)
 class TournamentsCreateView(LoginRequiredMixin, CreateView):
     model = Tournament
     template_name = 'tournaments/tournament_create_form.html'
@@ -278,7 +285,7 @@ class TournamentsCreateView(LoginRequiredMixin, CreateView):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
-
+# Max Koval (xkoval20)
 class TournamentsDeleteView(LoginRequiredMixin, DeleteView):
     model = Tournament
     template_name = 'tournaments/tournament_confirm_delete.html'

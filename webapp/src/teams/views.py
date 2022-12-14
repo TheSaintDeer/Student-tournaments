@@ -13,6 +13,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
+
+# Max Koval (xkoval20)
 def detail(request, team_id):
     current_team_q = Team.objects.filter(id=team_id)
     if not current_team_q.exists():
@@ -22,6 +24,7 @@ def detail(request, team_id):
     players_list = Player.objects.filter(teams__id = team_id)
     return render(request, 'teams/detail.html', {'team': current_team, 'players_list': players_list})
 
+# Max Koval (xkoval20)
 @login_required
 def add_player(request, team_id):
 
@@ -78,6 +81,7 @@ def add_player(request, team_id):
         form = PlayerForTeamForm(players_queryset)
     return render(request, 'teams/add_player_to_team.html', {'form': form})
 
+# Max Koval (xkoval20)
 def remove_player(request, team_id):
 
     team_q = Team.objects.filter(id = team_id)
@@ -122,7 +126,7 @@ def remove_player(request, team_id):
         form = PlayerForTeamForm(players_queryset=players_queryset)
     return render(request, 'teams/add_player_to_team.html', {'form': form})
 
-
+# Max Koval (xkoval20)
 class TeamsCreateView(LoginRequiredMixin, CreateView):
     model = Team
     template_name = 'teams/team_create_form.html'
@@ -163,7 +167,7 @@ class TeamsCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
             return reverse("tournaments:detail", kwargs={'tournament_id': self.kwargs['pk']})
 
-
+# Max Koval (xkoval20)
 class TeamsDeleteView(LoginRequiredMixin, DeleteView):
     model = Team
     template_name = 'teams/team_confirm_delete.html'

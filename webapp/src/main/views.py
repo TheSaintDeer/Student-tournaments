@@ -32,7 +32,7 @@ def user_detail(request, user_id):
 
     return render(request, 'main/user_detail.html', {'current_user': current_user, 'player': player})
 
-
+# Max Koval (xkoval20) a Ivan Golikov (xgolik00)
 @login_required
 def profile(request):
     player_q = Player.objects.filter(user = request.user)
@@ -54,7 +54,7 @@ def profile(request):
 
 
 
-
+# Max Koval (xkoval20) a Ivan Golikov (xgolik00)
 @login_required
 @csrf_protect
 def update_profile(request):
@@ -88,10 +88,11 @@ def update_profile(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+# Max Koval (xkoval20) a Ivan Golikov (xgolik00)
 def notification(request):
     return render(request, 'notification/index.html')
 
-
+# Max Koval (xkoval20) a Ivan Golikov (xgolik00)
 def registration_request(request):
     if request.method == "POST":
         form = NewUserForm(request.POST)
