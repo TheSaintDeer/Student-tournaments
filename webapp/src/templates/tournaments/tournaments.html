@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}   
 
 {% block title %}
 Tournaments page
@@ -7,42 +8,149 @@ Tournaments page
 {% block content %}
 
 <section class="py-4 text-center container">
+
   <div class="row py-lg-5">
     <div class="col-lg-6 col-md-8 mx-auto">
+      <div id="messages">
+      </div>
       <h1 class="fw-light">Current tournaments</h1>
-      <a class="btn btn-primary" href="{% url 'tournaments:create' %}">Create new</a>
+      <!-- <a class="btn btn-primary" href="{% url 'tournaments:create' %}">Create new</a> -->
+
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+        Create new tournament
+      </button>
+
+      <button id="reloadTournaments" type="button" class="btn btn-primary" hx-get="/tournaments/tournaments_list" hx-target="#tournament-list" hx-trigger="click, reloadEvent">
+      <a id="reloadTournaments2" hx-get="/tournaments/tournaments_list" hx-target="#tournament-list" hx-trigger="reloadEvent"></a>
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+        </svg>
+      </button>
+
+
+
       </p>
     </div>
   </div>
 </section>
 
+<section>
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">New tournament</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 
-<div class="album py-5 bg-light">
-  <div class="container">
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-      {% if tournament_list %}
-      {% for tournament in tournament_list %}
-      <div class="col">
-        <a href="{% url 'tournaments:detail' tournament.id %}">
-          <div class="card shadow-sm">
-            <div class="card-body">
-                <img width="128" height="128" src="{{ tournament.logo.url }}" alt="tournament logo here!">
-                <p class="card-text">Name: {{ tournament.name }}</p>
-                <p class="card-text">Date: {{ tournament.date_of_start }}</p>
+ 
 
-{#              <div class="d-flex justify-content-between align-items-center">#}
-{#                  <small class="text-muted">date</small>#}
-{#              </div>#}
+        </div>
+        <div class="modal-body">
+          <div id="form_messages">
+          </div>
+          <form id="create_tour_form" method="POST" enctype="multipart/form-data">
+    
+            <!-- Security token -->
+            {% csrf_token %}
+        
+            <!-- Using the formset -->
+            {{ create_tour_form | crispy }}
+            
+            <div class="modal-footer">
+              <button id="register" type="submit" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
 
-          </div>
-        </a>
+          </form>
+        
+        </div>
+       
       </div>
-      {% endfor %}
-      {% endif %}
     </div>
   </div>
-</div>
+</section>
+
+<section id="tournament-list">
+  <div class="album py-5 bg-light">
+    <div class="container">
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% if tournament_list %}
+            {% for tournament in tournament_list %}
+            <div class="col">
+            <a href="{% url 'tournaments:detail' tournament.id %}">
+                <div class="card shadow-sm">
+                <div class="card-body">
+                    <img width="128" height="128" src="{{ tournament.logo.url }}" alt="tournament logo here!">
+                    <p class="card-text">Name: {{ tournament.name }}</p>
+                    <p class="card-text">Date: {{ tournament.date_of_start }}</p>
+                    </div>
+                </div>
+            </a>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+  
+    </div>
+  </div>
+</section>
+
 
 {% endblock content %}
+
+
+{% block script %}
+<script>
+// On form submit, do ajax instead
+console.log("Ready!")  // sanity check
+
+$("#create_tour_form").submit(function(event){
+  event.preventDefault();
+  
+  // console.log($form)
+  var data = $(this).serializeArray();
+  console.log(data)
+  var errors = false;
+  if (data[3]['value'] < 2) {
+    $( "input[name='teams_number']" ).addClass('is-invalid')
+    $('#form_messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                Teams number cant be less than 2! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+            </div>');
+    errors = true;
+  }
+  if (data[4]['value'] < 1) {
+    $( "input[name='players_in_team']" ).addClass('is-invalid')
+    $('#form_messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
+                Each team should have at least 1 player! \
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
+            </div>');
+    errors = true;
+  }
+  console.log("Form submitted!")  // sanity check
+  // $form = $(this)
+  var formData = new FormData(this);
+  if (!errors) {
+    send_data("/tournaments/create_tournament/", "POST", formData);
+    $( "input[name='teams_number']" ).removeClass('is-invalid')
+    $( "input[name='players_in_team']" ).removeClass('is-invalid')
+
+    htmx.trigger("#reloadTournaments2", "reloadEvent", {});
+    $('#myModal').modal('hide');
+    $("#create_tour_form").trigger('reset');
+  }
+});
+
+
+
+</script>
+
+{% endblock script %}
+
+
+

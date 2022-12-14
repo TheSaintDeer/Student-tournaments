@@ -17,8 +17,12 @@ Team detail page
             <div class="container">
 
                 <!-- Avatar -->
-                <h4>Profile picture</h4>
-                <div style="background-image: url({{player.avatar.url}}); background-size: cover; background-position: center; padding: 30%; border-radius: 50%; width: 200px; height: 200px"></div>
+                <div id="profilePicture">
+                    <h4>Profile picture</h4>
+                    <div style="background-image: url({{player.avatar.url}}); background-size: cover; background-position: center; padding: 30%; border-radius: 50%; width: 200px; height: 200px"></div>
+
+                </div>
+                <a id="reloadProfilePic" hx-get="/update_profile_picture" hx-target="#profilePicture" hx-trigger="reloadEvent delay:1s"></a>
 
                 <!-- Teams -->
                 <div class="">
@@ -77,42 +81,10 @@ $('#update_form').on('submit', function(event){
     console.log("Form submitted!")  // sanity check
     $form = $(this)
     var formData = new FormData(this);
-    update_profile("/update_profile/", "POST", formData);
+    send_data("/update_profile/", "POST", formData);
+    htmx.trigger("#reloadProfilePic", "reloadEvent", {});
 });
 
-var alertList = document.querySelectorAll('.alert')
-alertList.forEach(function (alert) {
-new bootstrap.Alert(alert)
-})
 
-function update_profile(url, type, sendData) {
-
-    $.ajax({
-        url : url, // the endpoint
-        type : type, // http method
-        data : sendData, 
-        cache: false,
-        contentType: false,
-        processData: false,
-        // handle a successful response
-        success : function(json) {
-            console.log(json); // log the returned json to the console
-            $('#messages').html('<div class="alert alert-success alert-dismissible fade show" role="alert"> \
-                Changes saved! \
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
-            </div>');
-            console.log("Profile updated!") 
-
-        },
-        // handle a non-successful response
-        error : function(xhr,errmsg,err) {
-            $('#messages').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"> \
-                Oops! We have encountered an error! \
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> \
-            </div>');
-            console.log(xhr.status + ": " + xhr.responseText);
-        }
-    });
-};
 </script>
 {% endblock script %}

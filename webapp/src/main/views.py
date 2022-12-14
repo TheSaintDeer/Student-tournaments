@@ -52,7 +52,14 @@ def profile(request):
                   {'user_form': user_form, 'profile_form': profile_form, 'player': player})
 
 
+def update_profile_picture(request):
+    player_q = Player.objects.filter(user=request.user)
+    if not player_q.exists():
+        return redirect("tournaments:tournaments")
+    player = player_q.first()
 
+    return render(request, 'profile/update_profile_picture.html',
+                  {'player': player})
 
 
 @login_required
@@ -73,6 +80,7 @@ def update_profile(request):
 
         if user_form.is_valid():
             user_form.save()
+
 
         return JsonResponse(
             data=None,

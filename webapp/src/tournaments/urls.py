@@ -15,6 +15,8 @@ urlpatterns = [
     path('leaderboard/', views.leaderboard, name='leaderboard'),
     path('approve/<int:tournament_id>', views.approve, name='approve'),
     path('create_round/<int:tournament_id>', views.create_round, name='create_round'),
+    path('create_tournament/', views.create_tournament, name='create_tournament'),
+    path('tournaments_list/', views.tournaments_list, name='tournaments_list'),
 
 # generate_matches
 ]

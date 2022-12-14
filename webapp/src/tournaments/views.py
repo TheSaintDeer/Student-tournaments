@@ -1,27 +1,72 @@
 import math
+import json
+
+from main.models import Tournament, Team, Round, Match, Player
+from .forms import CreateRoundForm, create_match_form, ApproveTournamentForm, CreateTournamentForm
+
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from main.models import Tournament, Team, Round, Match, Player
-from django.views.generic.edit import CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.serializers import serialize
-import json
-from django import http
-from .forms import CreateRoundForm, create_match_form, ApproveTournamentForm
 from django.contrib.auth.decorators import login_required
-from rest_framework import status
+from django.views.generic.edit import CreateView, DeleteView
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.core.serializers import serialize
+from django import http
 from django.forms import formset_factory, modelformset_factory
-from django.contrib import messages
-# Create your views here.
+from rest_framework import status
 
-def tournaments(request):
-    tournament_list = reversed(Tournament.objects.all())
+def tournaments_list(request):
+
+    tournament_list = reversed(Tournament.objects.all().order_by('date_of_start'))
     context = {
         'tournament_list': tournament_list,
     }
+    return render(request, 'tournaments/tournament_list.html', context)
+
+def tournaments(request):
+
+    create_tour_form = CreateTournamentForm();
+
+
+    tournament_list = reversed(Tournament.objects.all().order_by('date_of_start'))
+    context = {
+        'tournament_list': tournament_list,
+        'create_tour_form': create_tour_form,
+    }
     return render(request, 'tournaments/tournaments.html', context)
+
+
+@login_required
+@csrf_protect
+def create_tournament(request):
+
+    if request.method == 'POST':
+
+        print(request.POST)
+
+        create_tour_form = CreateTournamentForm(request.POST)
+
+        if create_tour_form.is_valid():
+            instance = create_tour_form.save(commit=False)
+            instance.owner = request.user
+            instance.save()
+
+            data = {'result': 'success'}
+            return JsonResponse(
+                data=data,
+                safe=False,
+                content_type="application/json",
+                status=status.HTTP_200_OK
+            )
+
+    return JsonResponse(
+            data=None,
+            safe=False,
+            content_type="application/json",
+            status=status.HTTP_200_OK
+    )
+    pass
 
 def bracket(request, tournament_id, winner=None, top_team=None):
     tournament_q = Tournament.objects.filter(id=tournament_id)
@@ -144,8 +189,10 @@ def bracket(request, tournament_id, winner=None, top_team=None):
     data_tournament = serialize("json", [tournament])
     return render(request, 'tournaments/bracket.html', {'team_list': data_team, 'tournament': data_tournament, 't_jinja': tournament, 'round_list': rounds, 'match_list': matches})
 
+
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
 
 def detail(request, tournament_id):
     tournament_q = Tournament.objects.filter(id=tournament_id)
@@ -180,6 +227,7 @@ def create_round(request, tournament_id):
         return redirect("tournaments:detail", tournament_id=tournament_id)
     else:
         return render(request, 'tournaments/create_round.html', {'round_form': round_form})
+
 
 def approve(request, tournament_id):
 
@@ -264,14 +312,16 @@ def edit(request, match_id):
             content_type="application/json")
     return render(request, 'tournaments/edit.html', {'match': match, 'team_list': team_list})
 
+
 def leaderboard(request):
     players = Player.objects.all()
     return render(request, 'tournaments/leaderboard.html', {'players': players})
 
+
 class TournamentsCreateView(LoginRequiredMixin, CreateView):
     model = Tournament
-    template_name = 'tournaments/tournament_create_form.html'
     fields = ['name', 'description', 'logo', 'teams_number', 'players_in_team', 'date_of_start']
+    template_name = 'tournaments/tournament_create_form.html'
     success_url = '/tournaments'
 
     def form_valid(self, form):

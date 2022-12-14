@@ -6,16 +6,17 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.urls import reverse
 from django.utils.timezone import datetime
+from django.core.validators import MinValueValidator
 
 # Create your models here
 
 class Tournament(models.Model):
     name = models.TextField(max_length=100, help_text='Enter tournament name')
-    description = models.TextField(max_length=200, help_text='Enter description tournament')
+    description = models.TextField(max_length=200, help_text='Enter tournament description')
     logo = models.ImageField(default='default_logos/tournament_default.png', upload_to='tournaments_logo')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    teams_number = models.IntegerField(default=2)
-    players_in_team = models.IntegerField(default=1)
+    teams_number = models.IntegerField(default=2, validators=[MinValueValidator(2)])
+    players_in_team = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     approved_by_admin = models.BooleanField(default=False)
     bracket_exists = models.BooleanField(default=False)
     finished = models.BooleanField(default=False)
@@ -27,6 +28,7 @@ class Tournament(models.Model):
 
     def get_absolute_url(self):  # new
         return reverse('detail', args=[str(self.id)])
+
 
 class Team(models.Model):
     name = models.TextField(max_length=100, help_text='Enter team name')

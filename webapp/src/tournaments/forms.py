@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ValidationError
+from django.core import validators
 
 from main.models import Player, Round, Match, Tournament
 
@@ -52,3 +53,24 @@ def create_match_form(teams_queryset, round):
 
 
     return CreateMatchForm
+
+class CreateTournamentForm(forms.ModelForm):
+
+    teams_number = forms.IntegerField(validators=[validators.MinValueValidator(2)])
+    players_in_team = forms.IntegerField(validators=[validators.MinValueValidator(1)])
+
+
+    def __init__(self, *args, **kwargs):
+        super(CreateTournamentForm, self).__init__(*args, **kwargs)
+
+        self.fields['logo'].required = False
+
+        self.fields['name'].widget.attrs['rows'] = 1
+        self.fields['description'].widget.attrs['rows'] = 3
+
+        # self.fields['summary'].widget.attrs['columns'] = 15
+
+    class Meta:
+        model = Tournament
+        fields = ['name', 'description', 'logo', 'teams_number', 'players_in_team', 'date_of_start']
+
