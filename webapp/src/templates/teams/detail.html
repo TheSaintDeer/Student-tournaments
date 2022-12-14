@@ -9,6 +9,8 @@ Team detail page
 <ul>
     <h1>Team name: {{ team.name }}</h1>
     <h4 style="{% if team.owner.id == user.id %} color:red {% endif %}">Team owner: {{ team.owner }}</h4>
+    <h4>Tournament: <a href="{% url 'tournaments:detail' team.tournament.id %}">{{ team.tournament.name }}</a></h4>
+
     <h4>Players for this team:</h4>
 
     
