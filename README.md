@@ -13,5 +13,5 @@ $pip install -r /path/to/requirements.txt
 
 Zahájení projektu
 ```
-$pythom webapp/src/manage.py runserver
+$python webapp/src/manage.py runserver
 ```
