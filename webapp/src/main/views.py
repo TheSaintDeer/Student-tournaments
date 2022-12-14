@@ -13,11 +13,11 @@ from main.models import Tournament, Team, Player
 from django.contrib.auth.models import User
 import json
 
-
+# Ivan Golikov (xgolik00)
 def index(request):
     return render(request, 'main/index.html')
 
-
+# Max Koval (xkoval20) a Ivan Golikov (xgolik00)
 def user_detail(request, user_id):
     user_q = User.objects.filter(id = user_id)
 
